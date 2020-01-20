@@ -118,5 +118,12 @@ export default function PusherSignaling({ currentUser, roomId, target,name,close
 		
 	}
 
-	return { signalingMessage, sendSignalingMessage,error };
+	function resetSignalingState (){
+			setSignalingMessage(null);
+			setError(null);
+			setPartialMessage(null);
+			setMessages([]);
+	}
+
+	return { signalingMessage, resetSignalingState, sendSignalingMessage,error };
 }
