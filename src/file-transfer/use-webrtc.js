@@ -46,7 +46,6 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
         if(pc && initiator){
          
             let channel = pc.createDataChannel('chat');
-          //  channel.binaryType = 'arraybuffer'
             channel.onclose =() => {
                 setDatachannelState('closed');
                };
