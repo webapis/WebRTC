@@ -39,6 +39,13 @@ useEffect(()=>{
 },[bytesRecieved])
 
 
+function resetFileAssemblerState(){
 
-    return {downloadProgress,assembledFile}
+setDownloadProgress(0);
+setAssembledFile(null);
+setBytesRecieved(0);
+setIncomingFileData([]);
+
+}
+    return {downloadProgress,assembledFile,resetFileAssemblerState}
 }

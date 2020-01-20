@@ -11,7 +11,7 @@ export default function FileTransferView({
   closeDataChannel,
   assembledFile,
   remoteFileInfo,
-  readProgress
+  readProgress,
 }) {
   const {
     fileSelected,
@@ -30,6 +30,9 @@ export default function FileTransferView({
     if(signalingState==='closed'){
       debugger;
       setHaveLocalAnswer(false);
+    }
+    else if(signalingState==='have-local-answer'){
+      setHaveLocalAnswer(true);
     }
   },[signalingState])
 
@@ -59,6 +62,11 @@ export default function FileTransferView({
     handleSendMessage("file-cancel");
   }
 
+  function sendCancelRecieving (){
+    debugger;
+    handleSendMessage("cancelled-recieving-file")
+  }
+
   if (recievingFile) {
     return (
       <div className="file-transfer">
@@ -66,7 +74,7 @@ export default function FileTransferView({
           <CircularPercentageBar percent={downloadProgress} />
         </div>
         <div className="btn-container">
-          <button onClick={sendCancel}>Cancel Recieving</button>
+          <button onClick={sendCancelRecieving}>Cancel Recieving</button>
         </div>
       </div>
     );
@@ -90,7 +98,7 @@ export default function FileTransferView({
       <div className="file-transfer">
         <div>Recieving Complete</div>
         <div>
-        <a href="/"  ref={fileLinkRef}>Download file</a>
+        <a href="/"  ref={fileLinkRef} onClick={closeDataChannel}>Download file</a>
         </div>
       </div>
     );
@@ -110,7 +118,7 @@ export default function FileTransferView({
     return (
       <div className="file-transfer">
         <div className="btn-container">
-          <button disabled={haveLocalAnswer} onClick={sendAnswer}>Accept</button>
+          <button  onClick={sendAnswer}>Accept</button>
           <button disabled={haveLocalAnswer} onClick={sendDecline}>Decline</button>
         </div>
       </div>

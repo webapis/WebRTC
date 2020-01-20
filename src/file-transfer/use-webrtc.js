@@ -2,7 +2,7 @@
 import{useEffect, useState, useCallback} from 'react'
 import iceServers from './ice-servers';
 import useFileAssembler from './useFileAssembler'
-export default function useWebRTC ({signalingMessage,sendSignalingMessage, readProgress,startReadingFileBySlice, fileChunk,file}){
+export default function useWebRTC ({signalingMessage,sendSignalingMessage,startReadingFileBySlice, fileChunk,file, readProgress}){
     const [pc, setPc] = useState(null);
     const [error, setError] = useState(null);
     const [remoteIceCandidates, setRemoteIceCandidates] = useState([]);
@@ -16,9 +16,8 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
     const [iceGatheringState, setIceGatheringState] = useState(null);
     const [remoteFileChunk,setRemoteFileChunk]=useState(null);
     const [datachannelState,setDatachannelState] =useState('');
+    const [chunkDelivered,setChunkDelivered] =useState(0);
     const {downloadProgress,assembledFile} =useFileAssembler({fileChunk:remoteFileChunk,fileInfo:remoteFileInfo})
-
-
     useEffect(()=>{
         if(!pc){
             setSignalingState('');
@@ -31,29 +30,58 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
 
     useEffect(()=>{
         if(datachannelState==='closed'){
+         
             pc.close()
         }
     },[datachannelState])
 
     useEffect(()=>{
-        if(fileChunk){
-          
+        if(fileChunk && readProgress===0){
+            debugger;
             sendFileChunk(fileChunk);
+       
+
         }
-    },[fileChunk])
+        else if (fileChunk && readProgress>0 && chunkDelivered){
+            debugger;
+            sendFileChunk(fileChunk);
+            setChunkDelivered(false);
+        }
+    },[fileChunk,chunkDelivered,readProgress])
 
     useEffect(()=>{
         if(pc && initiator){
-         
             let channel = pc.createDataChannel('chat');
             channel.onclose =() => {
                 setDatachannelState('closed');
+        
+                sendSignalingMessage({type: "sending-file-cancelled"})
+               debugger;
                };
                channel.onopen =()=>{
                
                    startReadingFileBySlice();
                    setDatachannelState('open');
                }
+            channel.onmessage=(event)=>{
+            
+                if(event.data.constructor  === String){
+                    debugger;
+                    const msg =JSON.parse(event.data);
+                    switch(msg.type){
+                        case "cancelled-recieving-file":
+                        break;
+                        case "chunk-recieved":
+                            setChunkDelivered(true);
+                            break;
+                        default:
+                             throw new Error()
+                    }
+                }
+                else{
+                    debugger;
+                }
+            }
 			channel.onerror = (err) => {
                 setError(err);
                 debugger;
@@ -68,7 +96,7 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
           
             pc.createOffer()
             .then((localOffer)=> {
-              
+                if(!pc.localDescription )
                 pc.setLocalDescription(localOffer);
             })
             .then(()=>{
@@ -92,12 +120,21 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
                 let channel = event.channel;
      
                 channel.onmessage = (event) => {
-                  
-                    setRemoteFileChunk(event.data)
+              
+                    if(event.data instanceof ArrayBuffer)
+                    {
+                    
+                        setRemoteFileChunk(event.data)
+                        debugger
+                        channel.send(JSON.stringify({type:'chunk-recieved'}))
+                    }
+                 
+                
                 };
                 channel.onclose =() => {
+                    debugger;
                  setDatachannelState('closed');
-    
+              
                 };
                 channel.onopen =()=>{
                   
@@ -148,10 +185,16 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
                     remoteAnswerRecieved(signalingMessage.sdp)
                     break;
                 case 'file-decline':
-                    pc.close();
+                  
                     break;
-                case 'file-cancel':
-                    datachannel.close()
+                case 'cancelled-recieving-file':
+
+                    debugger;
+                    break;
+                case 'sending-file-cancelled':
+                debugger;    
+       
+         
                     break;
                 case 'file-start':
                     break;
@@ -187,7 +230,6 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
 		peerCon.onsignalingstatechange = () => {
             setSignalingState(peerCon.signalingState);
             if (peerCon.signalingState==='closed'){
-                debugger;
                 resetState();
             }
 		};
@@ -242,8 +284,9 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
             sendSignalingMessage({type:'file-decline'})
             pc.close()
             break;
-            case 'file-cancel':
-               datachannel.close()
+            case 'cancelled-recieving-file':
+                debugger;
+             datachannel.send(JSON.stringify({type:"cancelled-recieving-file"}))
             break;
             default:
         }
@@ -251,10 +294,10 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage, readP
 
     function sendFileChunk (fileChunk){
         try {
-            if(!error && datachannelState==='open' && datachannel.readyState !=='closing' && datachannel.readyState !=='closed'){
                 datachannel.send(fileChunk);
+                
                 startReadingFileBySlice();
-            } 
+            
         } catch (err) {
             debugger;
           setError(err)  
