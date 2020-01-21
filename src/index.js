@@ -4,7 +4,7 @@ import * as serviceWorker from "./serviceWorker";
 import Demo from "./Demo";
 
 ReactDOM.render(
-  <Demo title="Demo Title" clientOneName="gon" clientTwoName="kon" />,
+  <Demo title="File Transfer Demo" clientOneName="gon" clientTwoName="kon" />,
   document.getElementById("root")
 );
 //myoush
