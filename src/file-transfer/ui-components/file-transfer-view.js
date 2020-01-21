@@ -12,6 +12,7 @@ export default function FileTransferView({
   assembledFile,
   remoteFileInfo,
   readProgress,
+  
 }) {
   const {
     fileSelected,
@@ -23,19 +24,21 @@ export default function FileTransferView({
     haveLocalOffer
   } = uiState;
   const [haveLocalAnswer,setHaveLocalAnswer]= useState(false);
-  const {signalingState}= uiState
   const fileLinkRef =useRef(null);
-  
+
   useEffect(()=>{
-    if(signalingState==='closed'){
-      debugger;
-      setHaveLocalAnswer(false);
-    }
-    else if(signalingState==='have-local-answer'){
+  
+     if(uiState.signalingState==='have-local-answer'){
+       debugger;
       setHaveLocalAnswer(true);
     }
-  },[signalingState])
+    else{
+      debugger;
+      setHaveLocalAnswer(false); 
+    }
+  },[uiState])
 
+ 
 
   useEffect(()=>{
     if(assembledFile && remoteFileInfo && fileLinkRef.current ){
@@ -49,6 +52,7 @@ export default function FileTransferView({
   }
 
   function sendAnswer() {
+    console.log("downloadProgress",downloadProgress)
     setHaveLocalAnswer(true);
     handleSendMessage("file-answer");
   
@@ -58,15 +62,19 @@ export default function FileTransferView({
     handleSendMessage("file-decline");
   }
 
-  function sendCancel() {
-    handleSendMessage("file-cancel");
+  function sendCancelSending() {
+    handleSendMessage("cancelled-sending-file");
   }
 
   function sendCancelRecieving (){
-    debugger;
+
+    setHaveLocalAnswer(false);
     handleSendMessage("cancelled-recieving-file")
   }
-
+function downloadFile(){
+  setHaveLocalAnswer(false);
+  closeDataChannel();
+}
   if (recievingFile) {
     return (
       <div className="file-transfer">
@@ -87,7 +95,7 @@ export default function FileTransferView({
         <CircularPercentageBar percent={readProgress} />
 
         <div className="btn-container">
-          <button onClick={sendCancel}>Cancel Sending</button>
+          <button onClick={sendCancelSending}>Cancel Sending</button>
         </div>
       </div>
     );
@@ -98,7 +106,7 @@ export default function FileTransferView({
       <div className="file-transfer">
         <div>Recieving Complete</div>
         <div>
-        <a href="/"  ref={fileLinkRef} onClick={closeDataChannel}>Download file</a>
+        <a href="/"  ref={fileLinkRef} onClick={downloadFile}>Download file</a>
         </div>
       </div>
     );
@@ -118,7 +126,7 @@ export default function FileTransferView({
     return (
       <div className="file-transfer">
         <div className="btn-container">
-          <button  onClick={sendAnswer}>Accept</button>
+          <button disabled={haveLocalAnswer} onClick={sendAnswer}>Accept</button>
           <button disabled={haveLocalAnswer} onClick={sendDecline}>Decline</button>
         </div>
       </div>

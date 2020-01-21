@@ -28,7 +28,7 @@ export default function Client({ currentUser, name, target,roomId='0d3729a6-d4c2
   return (
     <div className="client">
       <div className="client-top">
-      <FileTransferView   remoteFileInfo={remoteFileInfo} assembledFile={assembledFile} closeDataChannel={closeDataChannel} downloadProgress={downloadProgress} state={state} handleSendMessage={handleSendMessage} readProgress={readProgress}  handleFileChange={handleFileChange} uiState={uiState}/>
+      <FileTransferView resetFileReaderState={resetFileReaderState}   remoteFileInfo={remoteFileInfo} assembledFile={assembledFile} closeDataChannel={closeDataChannel} downloadProgress={downloadProgress} state={state} handleSendMessage={handleSendMessage} readProgress={readProgress}  handleFileChange={handleFileChange} uiState={uiState}/>
       </div>
       <div className="client-bottom">
         <WebRTCState datachannelState={state.datachannelState} signalingState={state.signalingState} connectionState={state.connectionState} iceConnectionState={state.iceConnectionState} iceGatheringState={state.iceGatheringState} />

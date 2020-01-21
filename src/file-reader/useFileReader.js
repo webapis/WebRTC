@@ -25,6 +25,19 @@ export default function useFileReader() {
   useEffect(() => {
     if (files) {
       setFile(files[0]);
+      setNextSlice(0)
+      setReadComplete(false);
+      setReadProcess(0);
+      setBytesRead(0);
+      setFileChunk(null);
+
+         if(reader){
+        reader.onerror =null;
+        reader.onloadend =null;
+        setReader(null);
+    }
+
+
     }
   }, [files]);
 
@@ -87,21 +100,30 @@ export default function useFileReader() {
     setSlices(list);
   }
 
-  function startReadingFileBySlice() {
-    if (nextSlice < slices.length) {
-      reader.readAsArrayBuffer(
-        file.slice(slices[nextSlice].start, slices[nextSlice].end)
-      );
-      setNextSlice(prev => ++prev);
-    }
-  }
+  function startReadingFileBySlice({readNext}) {
+   
+      if(readNext){
+    
+        if (nextSlice < slices.length) {
+            reader.readAsArrayBuffer(
+              file.slice(slices[nextSlice].start, slices[nextSlice].end)
+            );
+            setNextSlice(prev => ++prev);
+     
+          }
+        }
+        else{
+        
+            resetFileReaderState()
+        }
+      }
+
 
   function resetFileReaderState() {
     setFiles(null);
     setFile(null);
     setSlices([]);
     setFileChunk(null);
- 
     setReadComplete(false);
     setError(false);
     setNextSlice(0);

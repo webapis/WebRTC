@@ -2,7 +2,7 @@
 import{useEffect, useState, useCallback} from 'react'
 import iceServers from './ice-servers';
 import useFileAssembler from './useFileAssembler'
-export default function useWebRTC ({signalingMessage,sendSignalingMessage,startReadingFileBySlice, fileChunk,file, readProgress}){
+export default function useWebRTC ({signalingMessage,sendSignalingMessage,startReadingFileBySlice, fileChunk,file,resetFileReaderState}){
     const [pc, setPc] = useState(null);
     const [error, setError] = useState(null);
     const [remoteIceCandidates, setRemoteIceCandidates] = useState([]);
@@ -16,71 +16,48 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage,startR
     const [iceGatheringState, setIceGatheringState] = useState(null);
     const [remoteFileChunk,setRemoteFileChunk]=useState(null);
     const [datachannelState,setDatachannelState] =useState('');
-    const [chunkDelivered,setChunkDelivered] =useState(0);
+    const [cancelledSending,setCancelledSending] =useState(false);
     const {downloadProgress,assembledFile} =useFileAssembler({fileChunk:remoteFileChunk,fileInfo:remoteFileInfo})
-    useEffect(()=>{
-        if(!pc){
-            setSignalingState('');
-            setIceConnectionState('');
-            setIceGatheringState('');
-            setConnectionState('');
-            setDatachannelState('');
-        }
-    },[pc])
 
     useEffect(()=>{
-        if(datachannelState==='closed'){
-         
-            pc.close()
-        }
-    },[datachannelState])
-
-    useEffect(()=>{
-        if(fileChunk && readProgress===0){
-            debugger;
+     
+         if (fileChunk){
+      
             sendFileChunk(fileChunk);
-       
-
-        }
-        else if (fileChunk && readProgress>0 && chunkDelivered){
-            debugger;
-            sendFileChunk(fileChunk);
-            setChunkDelivered(false);
-        }
-    },[fileChunk,chunkDelivered,readProgress])
+         }
+        
+    },[fileChunk])
 
     useEffect(()=>{
         if(pc && initiator){
             let channel = pc.createDataChannel('chat');
             channel.onclose =() => {
+             
                 setDatachannelState('closed');
+
+                     pc.close()
         
-                sendSignalingMessage({type: "sending-file-cancelled"})
-               debugger;
                };
                channel.onopen =()=>{
-               
-                   startReadingFileBySlice();
+              
+                   startReadingFileBySlice({readNext:true});
                    setDatachannelState('open');
                }
             channel.onmessage=(event)=>{
             
                 if(event.data.constructor  === String){
-                    debugger;
+                 
                     const msg =JSON.parse(event.data);
                     switch(msg.type){
                         case "cancelled-recieving-file":
+                    
+                            setCancelledSending(true);
                         break;
-                        case "chunk-recieved":
-                            setChunkDelivered(true);
-                            break;
                         default:
-                             throw new Error()
+                        
                     }
                 }
-                else{
-                    debugger;
-                }
+           
             }
 			channel.onerror = (err) => {
                 setError(err);
@@ -118,22 +95,19 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage,startR
       
             pc.ondatachannel = (event) => {
                 let channel = event.channel;
-     
                 channel.onmessage = (event) => {
               
                     if(event.data instanceof ArrayBuffer)
                     {
-                    
                         setRemoteFileChunk(event.data)
-                        debugger
-                        channel.send(JSON.stringify({type:'chunk-recieved'}))
                     }
                  
-                
                 };
                 channel.onclose =() => {
-                    debugger;
+                 
                  setDatachannelState('closed');
+                setRemoteFileChunk(null);
+                 pc.close()
               
                 };
                 channel.onopen =()=>{
@@ -185,18 +159,6 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage,startR
                     remoteAnswerRecieved(signalingMessage.sdp)
                     break;
                 case 'file-decline':
-                  
-                    break;
-                case 'cancelled-recieving-file':
-
-                    debugger;
-                    break;
-                case 'sending-file-cancelled':
-                debugger;    
-       
-         
-                    break;
-                case 'file-start':
                     break;
                 case 'ice':
                     remoteIceRecieved(signalingMessage.sdp)
@@ -285,23 +247,34 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage,startR
             pc.close()
             break;
             case 'cancelled-recieving-file':
-                debugger;
              datachannel.send(JSON.stringify({type:"cancelled-recieving-file"}))
+            break;
+            case 'cancelled-sending-file':
+           setCancelledSending(true);
             break;
             default:
         }
     }
 
     function sendFileChunk (fileChunk){
-        try {
+   
+        if(!cancelledSending){
+        
+            try {
                 datachannel.send(fileChunk);
-                
-                startReadingFileBySlice();
+                startReadingFileBySlice({readNext:true});
             
         } catch (err) {
             debugger;
           setError(err)  
         }
+
+
+        } else{
+            startReadingFileBySlice({readNext:false});
+            datachannel.close();
+        }
+     
     }
 
     function closeDataChannel (){
@@ -317,16 +290,22 @@ export default function useWebRTC ({signalingMessage,sendSignalingMessage,startR
 			pc.onicegatheringstatechange = null;
             pc.ontrack = null;
             pc.ondatachannel =null;
-			setError(null);
-            setRemoteOffer(null);
-            setRemoteFileInfo(null);
-            setInitiator(false);
-			setRemoteIceCandidates([]);
-            setDatachannelState(null);
-            setRemoteFileChunk(null);
-            setPc(null);
-            
-		}
+        }
+        setError(null);
+        setRemoteIceCandidates([]);
+        setRemoteOffer(null);
+        setRemoteFileInfo(null);
+        setInitiator(false);
+        setDatachannel(null);
+        setSignalingState(null);
+        setConnectionState(null);
+        setIceConnectionState(null);
+        setIceGatheringState(null);
+        setRemoteFileChunk(null);
+        setDatachannelState(null);
+        setCancelledSending(false);
+        setPc(null);
+   
     })
     
     return {handleSendMessage, state:{iceConnectionState,iceGatheringState,connectionState,signalingState,datachannelState},error,downloadProgress,assembledFile,closeDataChannel,remoteFileInfo}

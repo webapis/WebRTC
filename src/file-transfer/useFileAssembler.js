@@ -17,6 +17,9 @@ export default function useFileAssembler ({fileChunk,fileInfo}){
             // let downloadProgress = (((bytesRecieved + e.data.byteLength) / incomingFileInfo.fileSize) * 100).toFixed()
              setDownloadProgress(Number.parseInt(progress))
         }
+        else{
+            resetFileAssemblerState();
+        }
     },[fileChunk])
 //2. After filechunk is inserted into incomingFileData increment bytesRecieved
 useEffect(()=>{
@@ -47,5 +50,5 @@ setBytesRecieved(0);
 setIncomingFileData([]);
 
 }
-    return {downloadProgress,assembledFile,resetFileAssemblerState}
+    return {downloadProgress,assembledFile}
 }
