@@ -1,7 +1,8 @@
-import React,{useState, useRef,useEffect} from "react";
-import FileSelectorView from "../../file-reader/ui-components/file-selector-view";
-import CircularPercentageBar from "./CircularPercentageBar";
-import "./css/style.css";
+/* eslint-disable react/prop-types */
+import React, { useState, useRef, useEffect } from 'react';
+import FileSelectorView from '../../file-reader/ui-components/file-selector-view';
+import CircularPercentageBar from './CircularPercentageBar';
+import './css/style.css';
 
 export default function FileTransferView({
   handleSendMessage,
@@ -11,8 +12,7 @@ export default function FileTransferView({
   closeDataChannel,
   assembledFile,
   remoteFileInfo,
-  readProgress,
-  
+  readProgress
 }) {
   const {
     fileSelected,
@@ -23,58 +23,49 @@ export default function FileTransferView({
     recievingComplete,
     haveLocalOffer
   } = uiState;
-  const [haveLocalAnswer,setHaveLocalAnswer]= useState(false);
-  const fileLinkRef =useRef(null);
+  const [haveLocalAnswer, setHaveLocalAnswer] = useState(false);
+  const fileLinkRef = useRef(null);
 
-  useEffect(()=>{
-  
-     if(uiState.signalingState==='have-local-answer'){
-       debugger;
+  useEffect(() => {
+    if (uiState.signalingState === 'have-local-answer') {
       setHaveLocalAnswer(true);
+    } else {
+      setHaveLocalAnswer(false);
     }
-    else{
-      debugger;
-      setHaveLocalAnswer(false); 
-    }
-  },[uiState])
+  }, [uiState]);
 
- 
-
-  useEffect(()=>{
-    if(assembledFile && remoteFileInfo && fileLinkRef.current ){
-      fileLinkRef.current.href = URL.createObjectURL(assembledFile)
-      fileLinkRef.current.download=remoteFileInfo.name;
+  useEffect(() => {
+    if (assembledFile && remoteFileInfo && fileLinkRef.current) {
+      fileLinkRef.current.href = URL.createObjectURL(assembledFile);
+      fileLinkRef.current.download = remoteFileInfo.name;
     }
-  },[assembledFile,remoteFileInfo,fileLinkRef])
+  }, [assembledFile, remoteFileInfo, fileLinkRef]);
 
   function sendOffer() {
-    handleSendMessage("file-offer");
+    handleSendMessage('file-offer');
   }
 
   function sendAnswer() {
-    console.log("downloadProgress",downloadProgress)
     setHaveLocalAnswer(true);
-    handleSendMessage("file-answer");
-  
+    handleSendMessage('file-answer');
   }
 
   function sendDecline() {
-    handleSendMessage("file-decline");
+    handleSendMessage('file-decline');
   }
 
   function sendCancelSending() {
-    handleSendMessage("cancelled-sending-file");
+    handleSendMessage('cancelled-sending-file');
   }
 
-  function sendCancelRecieving (){
-
+  function sendCancelRecieving() {
     setHaveLocalAnswer(false);
-    handleSendMessage("cancelled-recieving-file")
+    handleSendMessage('cancelled-recieving-file');
   }
-function downloadFile(){
-  setHaveLocalAnswer(false);
-  closeDataChannel();
-}
+  function downloadFile() {
+    setHaveLocalAnswer(false);
+    closeDataChannel();
+  }
   if (recievingFile) {
     return (
       <div className="file-transfer">
@@ -82,20 +73,23 @@ function downloadFile(){
           <CircularPercentageBar percent={downloadProgress} />
         </div>
         <div className="btn-container">
-          <button onClick={sendCancelRecieving}>Cancel Recieving</button>
+          <button type="button" onClick={sendCancelRecieving}>
+            Cancel Recieving
+          </button>
         </div>
       </div>
     );
   }
 
   if (sendingFile) {
- 
     return (
       <div className="file-transfer">
         <CircularPercentageBar percent={readProgress} />
 
         <div className="btn-container">
-          <button onClick={sendCancelSending}>Cancel Sending</button>
+          <button type="button" onClick={sendCancelSending}>
+            Cancel Sending
+          </button>
         </div>
       </div>
     );
@@ -106,7 +100,9 @@ function downloadFile(){
       <div className="file-transfer">
         <div>Recieving Complete</div>
         <div>
-        <a href="/"  ref={fileLinkRef} onClick={downloadFile}>Download file</a>
+          <a href="/" ref={fileLinkRef} onClick={downloadFile}>
+            Download file
+          </a>
         </div>
       </div>
     );
@@ -117,7 +113,9 @@ function downloadFile(){
       <div className="file-transfer">
         <div>Sending Complete</div>
         <div>
-          <button onClick={closeDataChannel}>Ok</button>
+          <button type="button" onClick={closeDataChannel}>
+            Ok
+          </button>
         </div>
       </div>
     );
@@ -126,8 +124,16 @@ function downloadFile(){
     return (
       <div className="file-transfer">
         <div className="btn-container">
-          <button disabled={haveLocalAnswer} onClick={sendAnswer}>Accept</button>
-          <button disabled={haveLocalAnswer} onClick={sendDecline}>Decline</button>
+          <button type="button" disabled={haveLocalAnswer} onClick={sendAnswer}>
+            Accept
+          </button>
+          <button
+            type="button"
+            disabled={haveLocalAnswer}
+            onClick={sendDecline}
+          >
+            Decline
+          </button>
         </div>
       </div>
     );
@@ -140,8 +146,12 @@ function downloadFile(){
   return (
     <div className="file-transfer">
       <div className="btn-container">
-        <button disabled={haveLocalOffer}  onClick={sendOffer}>Send File</button>
-        <button  disabled={haveLocalOffer} onClick={sendOffer}>Cancel</button>
+        <button type="button" disabled={haveLocalOffer} onClick={sendOffer}>
+          Send File
+        </button>
+        <button type="button" disabled={haveLocalOffer} onClick={sendOffer}>
+          Cancel
+        </button>
       </div>
     </div>
   );
