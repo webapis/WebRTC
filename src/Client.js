@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import WebRTCState from "./common/webrtc-connection-state";
 import VideoChatView from './video-chat/ui-components/VideoChatView';
