@@ -1,32 +1,35 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es6": true
+  env: {
+    browser: true,
+    es6: true
+  },
+  extends: [
+    'airbnb',
+    'prettier',
+    'eslint:recommended',
+    'plugin:react/recommended'
+  ],
+  globals: {
+    Atomics: 'readonly',
+    SharedArrayBuffer: 'readonly'
+  },
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true
     },
-    "extends": [
-        "airbnb",
-        "prettier",
-        "eslint:recommended",
-        "plugin:react/recommended"
+    ecmaVersion: 2018,
+    sourceType: 'module'
+  },
+  plugins: ['react'],
+  rules: {
+    'react/prop-types': 0,
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'no-restricted-syntax': [
+      'error',
+      'FunctionExpression',
+      'WithStatement',
+      "BinaryExpression[operator='in']"
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 2018,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react"
-    ],
-    "rules": {
-        "react/prop-types": 0,
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-        "no-restricted-syntax": ["error", "FunctionExpression", "WithStatement", "BinaryExpression[operator='in']"]
-    }
-    
+    'react-hooks/exhaustive-deps': 0
+  }
 };
