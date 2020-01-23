@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import { useEffect,useState } from 'react';
 
 export default function useUIState ({ state }){
 	const { connectionState, signalingState, iceConnectionState } =state;
@@ -15,7 +15,7 @@ export default function useUIState ({ state }){
 	const [ declineBtnVisible,setDeclineBtnVisible]= useState(false);
 	const [ ignoreBtnVisible,setIgnoreBtnVisible ]=useState(false);
 	const [ endBtnVisible,setEndBtnVisible ]=useState(false);
-	// const { failed,setFailed } =useState(false);
+
     
 	useEffect(() => {
 		if (signalingState==='have-local-offer'){

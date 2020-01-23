@@ -15,6 +15,7 @@ export default function VideoChatView({ remoteMediaStream,localMediaStream, uiSt
 
   const { remoteStreamSize, localStreamSize } = mediaSize;
   function sendOffer (){
+    debugger;
     handleSendMessage('offer');
   }
 
