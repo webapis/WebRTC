@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import StateTable from './state-table';
 <<<<<<< HEAD
+<<<<<<< HEAD
 export default function WebRTCConnectionState ({signalingState ='',connectionState='',iceConnectionState='',iceGatheringState=''  }){
+=======
+export default function WebRTCConnectionState ({signalingState ='',connectionState='',iceConnectionState='',iceGatheringState='', datachannelState=''  }){
+>>>>>>> demo
 	const [rtcPeerConStates, setRtcPeerConStates]= useState([]);
 =======
 export default function RTCStateView({ state }) {
@@ -14,6 +18,7 @@ export default function RTCStateView({ state }) {
   const [rtcPeerConStates, setRtcPeerConStates] = useState([]);
 >>>>>>> common
 
+<<<<<<< HEAD
   useEffect(() => {
     if (iceConnectionState === 'closed') {
       setRtcPeerConStates([]);
@@ -31,6 +36,76 @@ export default function RTCStateView({ state }) {
   }, [connectionState]);
 
 <<<<<<< HEAD
+=======
+	useEffect(() => {
+		if (iceConnectionState==='closed'){
+			setRtcPeerConStates([]);
+		}
+	},[iceConnectionState]);
+	useEffect(() => {
+	
+		const newState ={
+			signalingState: { state: signalingState,changed: false },
+			connectionState: { state: connectionState,changed: true },
+			iceGatheringState: { state: iceGatheringState,changed: false },
+			iceConnectionState: { state: iceConnectionState,changed: false },
+			datachannelState: { state: datachannelState,changed: false },
+			timestamp: { time: new Date().toLocaleTimeString() }
+		};
+		setRtcPeerConStates((preState) => [...preState, newState ]);
+		
+	
+	},[connectionState]);
+    
+	useEffect(() => {
+		const newState ={
+			signalingState: { state: signalingState,changed: false },
+			connectionState: { state: connectionState,changed: false },
+			iceGatheringState: { state: iceGatheringState,changed: false },
+			iceConnectionState: { state: iceConnectionState,changed: true },
+			datachannelState: { state: datachannelState,changed: false },
+			timestamp: { time: new Date().toLocaleTimeString()  }
+        
+		};
+		setRtcPeerConStates((preState) => [...preState, newState ]);
+	},[iceConnectionState]);
+	useEffect(() => {
+		const newState ={
+			signalingState: { state: signalingState,changed: false },
+			connectionState: { state: connectionState,changed: false },
+			iceGatheringState: { state: iceGatheringState,changed: true },
+			iceConnectionState: { state: iceConnectionState,changed: false },
+			datachannelState: { state: datachannelState,changed: false },
+			timestamp: { time: new Date().toLocaleTimeString()   }
+        
+		};
+		setRtcPeerConStates((preState) => [...preState, newState ]);
+	},[iceGatheringState]);
+	useEffect(() => {
+		const newState ={
+			signalingState: { state: signalingState,changed: true },
+			connectionState: { state: connectionState,changed: false },
+			iceGatheringState: { state: iceGatheringState,changed: false },
+			iceConnectionState: { state: iceConnectionState,changed: false },
+			datachannelState: { state: datachannelState,changed: false },
+			timestamp: { time: new Date().toLocaleTimeString()   }
+        
+		};
+		setRtcPeerConStates((preState) => [...preState, newState ]);
+	},[signalingState]);
+	useEffect(() => {
+		const newState ={
+			signalingState: { state: signalingState,changed: true },
+			connectionState: { state: connectionState,changed: false },
+			iceGatheringState: { state: iceGatheringState,changed: false },
+			iceConnectionState: { state: iceConnectionState,changed: false },
+			datachannelState: { state: datachannelState,changed: true },
+			timestamp: { time: new Date().toLocaleTimeString()   }
+        
+		};
+		setRtcPeerConStates((preState) => [...preState, newState ]);
+	},[datachannelState]);
+>>>>>>> demo
 	return (
 		<div className="table-container">
 			<div >RTCPeerConnection state</div>
