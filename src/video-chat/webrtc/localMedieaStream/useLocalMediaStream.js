@@ -1,18 +1,29 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import getlocalUserMedia from './getMediaStream';
-export default function useLocalMediaStream(mediaConstraints) {
+export default function useLocalMediaStream({ mediaConstraints, state }) {
   const [localMediaStream, setLocalMediaStream] = useState(null);
 
   const [localMediaStreamError, setLocalMediaStreamError] = useState(null);
+  function resetState() {
+    setLocalMediaStream(null);
+  }
 
+  useEffect(() => {
+    return () => {
+      if (state.signalingState === 'closed') {
+        //  debugger;
+        resetState();
+      }
+    };
+  });
   function getLocalMediaStream() {
     getlocalUserMedia(mediaConstraints, (error, media) => {
       if (error) {
-        debugger;
+        //  debugger;
         setLocalMediaStreamError(error);
       } else {
-        debugger; // 1.1. Caller
+        //   debugger; // 1.1. Caller
         setLocalMediaStream(media);
       }
     });

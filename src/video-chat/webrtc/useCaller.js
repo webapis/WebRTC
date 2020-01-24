@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export default function useCaller({
+  state,
   signalingMessage,
   sendSignalingMessage,
   createRTCPeerConnection,
@@ -9,47 +10,68 @@ export default function useCaller({
   localMediaStream,
   remoteIceCandidates
 }) {
-  const [callerError, setCallerError] = useState(null);
-  
-  function initiateOffer() {
-    debugger; // 1.Caller
-    getLocalMediaStream();
+  const [callerError, setCallerError] = useState(false);
+  const [initiated, setInitiated] = useState(false);
+
+  function resetState() {
+    setInitiated(false);
+    setCallerError(null);
   }
 
   useEffect(() => {
-    if (localMediaStream) {
-      debugger; //2. Caller
-      createRTCPeerConnection();
+    return () => {
+      if (state.signalingState === 'closed') {
+       // debugger;
+        resetState();
+      }
+    };
+  });
+  function initiateOffer() {
+   // debugger; // 1.Caller
+    setInitiated(true);
+  }
+  useEffect(() => {
+    if (initiated) {
+    //  debugger; // 1.1 Caller
+
+      getLocalMediaStream();
     }
-  }, [localMediaStream]);
+  }, [initiated]);
 
   useEffect(() => {
-    if (rtcPeerConnection && localMediaStream) {
-      debugger; //3.Caller
+    if (localMediaStream && initiated) {
+    //  debugger; //2. Caller
+      createRTCPeerConnection();
+    }
+  }, [localMediaStream, initiated]);
+
+  useEffect(() => {
+    if (rtcPeerConnection && localMediaStream && initiated) {
+    //  debugger; //3.Caller
       localMediaStream.getVideoTracks().forEach(t => {
         rtcPeerConnection.addTrack(t, localMediaStream);
       });
     }
-  }, [rtcPeerConnection,localMediaStream]);
+  }, [rtcPeerConnection, localMediaStream]);
 
   useEffect(() => {
     if (rtcPeerConnection && rtcPeerConnection.getReceivers().length > 0) {
-      debugger; //4.Caller
+     // debugger; //4.Caller
       rtcPeerConnection
         .createOffer()
         .then(offer => {
-          debugger; //5.Caller
+       //   debugger; //5.Caller
           rtcPeerConnection.setLocalDescription(offer);
         })
         .then(() => {
-          debugger; // 6. Caller
+        //  debugger; // 6. Caller
           sendSignalingMessage({
             sdp: rtcPeerConnection.localDescription,
             type: 'offer'
           });
         })
         .catch(err => {
-          debugger; //6.1 Caller
+        //  debugger; //6.1 Caller
           setCallerError(err);
         });
     }
@@ -57,11 +79,11 @@ export default function useCaller({
 
   useEffect(() => {
     if (signalingMessage && signalingMessage.type == 'answer') {
-      debugger; // 7. Caller
+   //   debugger; // 7. Caller
       rtcPeerConnection
         .setRemoteDescription(signalingMessage.sdp.sdp)
         .then(() => {
-          debugger; //8.Caller
+        //  debugger; //8.Caller
           if (remoteIceCandidates.length > 0) {
             for (let ice in remoteIceCandidates) {
               if (ice) {

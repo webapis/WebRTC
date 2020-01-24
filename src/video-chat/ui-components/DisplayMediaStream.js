@@ -4,19 +4,15 @@ export default function DisplayMediaStream({ mediaStream, width, title }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
-    debugger;
-    if (
-      videoRef.current &&
-      videoRef.current.srcObject &&
-      mediaStream !== null
-    ) {
+    if (videoRef.current && mediaStream !== null) {
+
       videoRef.current.srcObject = mediaStream;
     }
 
-    else if (!videoRef.current.srcObject && mediaStream === null) {
-      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
-      videoRef.current.srcObject = null;
-    }
+    // else if (!videoRef.current.srcObject && mediaStream === null) {
+    //   videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+    //   videoRef.current.srcObject = null;
+    // }
   }, [mediaStream, videoRef]);
 
   if (mediaStream !== null) {
