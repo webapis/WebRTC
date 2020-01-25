@@ -16,9 +16,9 @@ export default function useRTCPeerConnection({
   function setRemoteIce(sdp) {
     if (rtcPeerConnection && rtcPeerConnection.remoteDescription) {
       rtcPeerConnection.addIceCandidate(sdp);
-     // debugger;
+      // debugger;
     } else {
-     // debugger;
+      // debugger;
       setRemoteIceCandidates(prev => [...prev, signalingMessage.sdp]);
     }
   }
@@ -26,11 +26,12 @@ export default function useRTCPeerConnection({
     if (
       signalingMessage &&
       signalingMessage.type === 'ice' &&
-      signalingMessage.sdp.sdp
+      signalingMessage.sdp
     ) {
       if (rtcPeerConnection && rtcPeerConnection.remoteDescription) {
-        rtcPeerConnection.addIceCandidate(signalingMessage.sdp.sdp);
+        rtcPeerConnection.addIceCandidate(signalingMessage.sdp);
       } else {
+        debugger;
         setRemoteIceCandidates(prev => [...prev, signalingMessage.sdp]);
       }
     }
@@ -39,7 +40,7 @@ export default function useRTCPeerConnection({
     const peerCon = new RTCPeerConnection(iceServers);
     peerCon.onicecandidate = function(e) {
       if (e.candidate) {
-      //  debugger; // 5.1 Caller
+        //  debugger; // 5.1 Caller
         sendSignalingMessage({ sdp: e.candidate, type: 'ice' });
       }
     };
@@ -49,7 +50,7 @@ export default function useRTCPeerConnection({
     peerCon.onsignalingstatechange = () => {
       setSignalingState(peerCon.signalingState);
       if (peerCon.signalingState === 'closed') {
-       // debugger;
+        // debugger;
 
         peerCon.onicecandidate = null;
         peerCon.onconnectionstatechange = null;
@@ -67,7 +68,7 @@ export default function useRTCPeerConnection({
       setIceGatheringState(peerCon.iceGatheringState);
     };
     peerCon.ontrack = e => {
-     // debugger; //3.1.Callee  //7.1 Caller
+      // debugger; //3.1.Callee  //7.1 Caller
       setRemoteMediaStream(e.streams[0]);
     };
 
@@ -75,7 +76,7 @@ export default function useRTCPeerConnection({
   }
   useEffect(() => {
     if (!rtcPeerConnection) {
-    //  debugger;
+      //  debugger;
       resetState();
     }
   }, [rtcPeerConnection]);

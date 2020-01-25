@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import Demo from './Demo'
 
-ReactDOM.render(<Demo title="Video Chat Demo" clientOneName="gon" clientTwoName="kon" />, document.getElementById('root'));
+ReactDOM.render(<Demo title="Peer to Peer Video Chat Demo using WebRTC" clientOneName="gon" clientTwoName="kon" />, document.getElementById('root'));
 
 
 // If you want your app to work offline and load faster, you can change
