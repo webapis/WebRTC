@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Client from './Client';
 import usePusher, { getPusherConfig } from './signaling/pusher/usePusher';
 import ErrorMessage from './ErrorMessage';
@@ -9,6 +9,8 @@ export default function Demo({ title, clientOneName, clientTwoName }) {
   const { currentUser: clientTwo, error: clientTwoError } = usePusher(
     getPusherConfig({ userId: clientTwoName })
   );
+  const [disableConnect,setDisableConntect]= useState(null)
+
 
   if (clientOneError) {
     return <ErrorMessage error={clientOneError} />;
@@ -20,11 +22,15 @@ export default function Demo({ title, clientOneName, clientTwoName }) {
         <h1 className="demo-title">{title}</h1>
         <div className="demo">
           <Client
+          setDisableConntect={setDisableConntect}
+          disableConnect={disableConnect}
             currentUser={clientOne}
             name={clientOneName}
             target={clientTwoName}
           />
           <Client
+             setDisableConntect={setDisableConntect}
+             disableConnect={disableConnect}
             currentUser={clientTwo}
             name={clientTwoName}
             target={clientOneName}

@@ -3,8 +3,7 @@ import './style.css';
 export default function TextChatView({
   remoteMessage,
   sendMessage,
-  state,
-  initiateOffer
+  state
 }) {
   const { connectionState } = state;
   const [message, setMessage] = useState('');
@@ -46,7 +45,6 @@ export default function TextChatView({
       </div>
       <div className="controls">
         <input
-          onFocus={initiateOffer}
           onChange={handleChange}
           value={message}
           type="text"

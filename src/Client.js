@@ -10,7 +10,9 @@ export default function Client({
   currentUser,
   roomId = '0d3729a6-d4c2-4af0-8e7a-1efc9ea0f428',
   target,
-  name
+  name,
+  setDisableConntect,
+  disableConnect
 }) {
   const {
     signalingMessage,
@@ -32,16 +34,29 @@ export default function Client({
     return <ErrorMessage error={webRTCError} />;
   }
 
+  function createOffer() {
+    setDisableConntect(true);
+    initiateOffer();
+  }
+
   return (
     <div className="client">
       <div className="client-top">
-        <TextChatView
-          sendMessage={sendMessage}
-          state={state}
-          remoteMessage={message}
-          connected={connected}
-          initiateOffer={initiateOffer}
-        />
+        {state.connectionState === 'connected' && (
+          <TextChatView
+            sendMessage={sendMessage}
+            state={state}
+            remoteMessage={message}
+            connected={connected}
+          />
+        )}
+        {state.connectionState !== 'connected' && (
+          <div className="connect">
+            <button disabled={disableConnect} onClick={createOffer}>
+              Connect
+            </button>
+          </div>
+        )}
       </div>
       <div className="client-bottom">
         <WebRTCState
