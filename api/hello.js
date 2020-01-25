@@ -5,10 +5,10 @@ const url =
   'mongodb+srv://demoadmin:demoadmin@democluster-k12ir.mongodb.net/test?retryWrites=true&w=majority';
 const dbName = 'demo';
 module.exports = (req, res) => {
-  const client = new MongoClient(url);
+  const client = new MongoClient(url, { useUnifiedTopology: true });
   // Use connect method to connect to the Server
   client.connect(function(err) {
-    assert.equal(null, err);
+    console.log('Mongo Error', err);
     console.log('Connected successfully to server');
 
     const db = client.db(dbName);
