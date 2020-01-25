@@ -16,8 +16,10 @@ module.exports = (req, res) => {
       password: 'new pass',
       email: 'webapis.github@gmail.com'
     });
-    client.close();
+    //  client.close();
     const { name = 'World' } = req.query;
-    res.status(200).send(`Hello ${name}!`);
+    setTimeout(() => {
+      res.status(200).send(`Hello ${name}!`);
+    }, 10000);
   });
 };
