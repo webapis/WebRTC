@@ -50,14 +50,12 @@ export default function useWebRTCDataChannel({
 
   function sendMessage(value) {
     const localMessage = { sender: name, message: value };
-    //  setMessage(localMessage);
     dataChannel.send(JSON.stringify(localMessage));
   }
   return {
     initiateOffer,
     error,
     message,
-    // connected,
     sendMessage,
     state
   };
