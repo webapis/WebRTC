@@ -22,7 +22,7 @@ export default function usePusher(config) {
         })
       );
     }
-  }, [userId,instanceLocator,url]);
+  }, [userId, instanceLocator, url]);
 
   useEffect(() => {
     if (chatManager) {
