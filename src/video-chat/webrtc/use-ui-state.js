@@ -22,6 +22,7 @@ export default function useUIState ({ state }){
 			setCalling(true);
 		}
 		else if (signalingState==='have-remote-offer'){
+			debugger;
 			setRecievingCall(true);
 		}
 

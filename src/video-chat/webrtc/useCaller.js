@@ -12,7 +12,6 @@ export default function useCaller({
 }) {
   const [callerError, setCallerError] = useState(false);
   const [initiated, setInitiated] = useState(false);
-
   function resetState() {
     setInitiated(false);
     setCallerError(null);
@@ -27,12 +26,12 @@ export default function useCaller({
     };
   });
   function initiateOffer() {
-    // debugger; // 1.Caller
+    debugger; // 1.Caller
     setInitiated(true);
   }
   useEffect(() => {
     if (initiated) {
-      //  debugger; // 1.1 Caller
+      debugger; // 2 Caller
 
       getLocalMediaStream();
     }
@@ -40,14 +39,14 @@ export default function useCaller({
 
   useEffect(() => {
     if (localMediaStream && initiated) {
-      //  debugger; //2. Caller
-      createRTCPeerConnection();
+      debugger; //3. Caller
+      createRTCPeerConnection(true);
     }
   }, [localMediaStream, initiated]);
 
   useEffect(() => {
     if (rtcPeerConnection && localMediaStream && initiated) {
-      //  debugger; //3.Caller
+      debugger; //4.Caller
       localMediaStream.getVideoTracks().forEach(t => {
         rtcPeerConnection.addTrack(t, localMediaStream);
       });
@@ -56,22 +55,22 @@ export default function useCaller({
 
   useEffect(() => {
     if (rtcPeerConnection && rtcPeerConnection.getReceivers().length > 0) {
-      // debugger; //4.Caller
+      debugger; //5.Caller
       rtcPeerConnection
         .createOffer()
         .then(offer => {
-          //   debugger; //5.Caller
-          rtcPeerConnection.setLocalDescription(offer);
+          debugger; //6.Caller
+          return rtcPeerConnection.setLocalDescription(offer);
         })
         .then(() => {
-          //  debugger; // 6. Caller
+          debugger; // 7. Caller
           sendSignalingMessage({
             sdp: rtcPeerConnection.localDescription,
             type: 'offer'
           });
         })
         .catch(err => {
-          //  debugger; //6.1 Caller
+          debugger; //7.1 Caller
           setCallerError(err);
         });
     }
@@ -83,7 +82,7 @@ export default function useCaller({
       signalingMessage.type == 'answer' &&
       rtcPeerConnection
     ) {
-      //   debugger; // 7. Caller
+      debugger; // 8. Caller
       rtcPeerConnection
         .setRemoteDescription(signalingMessage.sdp.sdp)
         .then(() => {

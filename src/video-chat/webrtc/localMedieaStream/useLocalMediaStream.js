@@ -12,7 +12,7 @@ export default function useLocalMediaStream({ mediaConstraints, state }) {
   useEffect(() => {
     return () => {
       if (state.signalingState === 'closed') {
-        //  debugger;
+          debugger;
         resetState();
       }
     };
@@ -20,10 +20,10 @@ export default function useLocalMediaStream({ mediaConstraints, state }) {
   function getLocalMediaStream() {
     getlocalUserMedia(mediaConstraints, (error, media) => {
       if (error) {
-        //  debugger;
+          debugger;
         setLocalMediaStreamError(error);
       } else {
-        //   debugger; // 1.1. Caller
+          debugger; // 1.1. Caller
         setLocalMediaStream(media);
       }
     });
