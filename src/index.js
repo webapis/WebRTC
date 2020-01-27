@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import adapter from 'webrtc-adapter';
 import * as serviceWorker from './serviceWorker';
 import Demo from './Demo'
-
+debugger;
 ReactDOM.render(<Demo title="Peer to Peer Video Chat Demo using WebRTC" clientOneName="gon" clientTwoName="kon" />, document.getElementById('root'));
 
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 export default function usePusher(config) {
   const { instanceLocator, userId, url } = config;
+  debugger;
   const [chatManager, setChatManager] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [pusherError, setPusherError] = useState(null);
@@ -12,6 +13,7 @@ export default function usePusher(config) {
     if (!navigator.onLine) {
       setPusherError(new Error('Your device is offline'));
     } else {
+      debugger;
       setChatManager(
         new ChatManager({
           instanceLocator,
@@ -20,17 +22,20 @@ export default function usePusher(config) {
         })
       );
     }
-  }, []);
+  }, [userId,instanceLocator,url]);
 
   useEffect(() => {
     if (chatManager) {
+      debugger;
       setConnecting(true);
       chatManager
         .connect()
         .then(cUser => {
+          debugger;
           setCurrentUser(cUser);
         })
         .catch(err => {
+          debugger;
           setPusherError(err);
         });
     }
@@ -38,6 +43,7 @@ export default function usePusher(config) {
 
   useEffect(() => {
     if (currentUser) {
+      debugger;
       setConnecting(false);
     }
   }, [currentUser]);

@@ -3,6 +3,7 @@ import Client from './Client';
 import usePusher, { getPusherConfig } from './signaling/pusher/usePusher';
 import ErrorMessage from './ErrorMessage';
 export default function Demo({ title, clientOneName, clientTwoName }) {
+  debugger;
   const { currentUser: clientOne, error: clientOneError } = usePusher(
     getPusherConfig({ userId: clientOneName })
   );
@@ -33,6 +34,7 @@ export default function Demo({ title, clientOneName, clientTwoName }) {
       </div>
     );
   }
+  debugger;
   return (
     <div className="loading">
       <h2>Loading...</h2>
