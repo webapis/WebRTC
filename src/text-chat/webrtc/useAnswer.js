@@ -39,7 +39,7 @@ export default function useAnswer({
           return rtcPeerConnection.createAnswer();
         })
         .then(answer => {
-          rtcPeerConnection.setLocalDescription(answer);
+       return   rtcPeerConnection.setLocalDescription(answer);
         })
         .then(() => {
           sendSignalingMessage({
