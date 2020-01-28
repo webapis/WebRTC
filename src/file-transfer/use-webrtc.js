@@ -158,7 +158,7 @@ export default function useWebRTC({
     if (pc && datachannel && initiator) {
       pc.createOffer()
         .then(localOffer => {
-          if (!pc.localDescription) pc.setLocalDescription(localOffer);
+          return pc.setLocalDescription(localOffer);
         })
         .then(() => {
           const fileInfo = {
@@ -205,7 +205,7 @@ export default function useWebRTC({
           return pc.createAnswer();
         })
         .then(localAnswer => {
-          pc.setLocalDescription(localAnswer);
+          return pc.setLocalDescription(localAnswer);
         })
         .then(() => {
           if (remoteIceCandidates.length > 0) {
