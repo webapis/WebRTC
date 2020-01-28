@@ -12,5 +12,6 @@ module.exports = async (req, res) => {
   const authData = chatkit.authenticate({
     userId: req.query.user_id
   });
+  
   res.status(authData.status).send(authData.body);
 };
