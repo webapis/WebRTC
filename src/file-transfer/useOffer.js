@@ -49,10 +49,10 @@ export default function useOffer({
   useEffect(() => {
     if (
       rtcPeerConnection &&
-      signalingMessage &&
+      signalingMessage && initiator &&
       signalingMessage.type === 'file-answer'
     ) {
-    //  debugger; // 7.offer
+      debugger; // 7.offer
       rtcPeerConnection
         .setRemoteDescription(signalingMessage.sdp)
         .then(() => {

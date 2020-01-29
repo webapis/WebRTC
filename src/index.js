@@ -1,10 +1,12 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import adapter from 'webrtc-adapter';
 import * as serviceWorker from './serviceWorker';
 import Demo from './Demo';
 
 ReactDOM.render(
-  <Demo title="File Transfer Demo" clientOneName="gon" clientTwoName="kon" />,
+  <Demo title=" Peer to Peer File Transfer Demo using WebRTC" clientOneName="gon" clientTwoName="kon" />,
   document.getElementById('root')
 );
 // test
