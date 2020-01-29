@@ -6,13 +6,10 @@ export default function useAnswer({
   rtcPeerConnection,
   signalingMessage,
   sendSignalingMessage,
-  remoteIceCandidates,
-  message
+  remoteIceCandidates
 }) {
   const [remoteOffer, setRemoteOffer] = useState(null);
   const [answerError, setAnswerError] = useState(null);
-  const [remoteFileChunk, setRemoteFileChunk] = useState(null);
-  const [remoteFileInfo, setRemoteFileInfo] = useState(null);
   useEffect(() => {
     if (signalingMessage && signalingMessage.type === 'file-offer') {
       debugger; // 1. Answer
@@ -24,7 +21,6 @@ export default function useAnswer({
     if (remoteOffer) {
       debugger; // 2. Answer
       createRTCPeerConnection(false);
-      setRemoteFileInfo(signalingMessage.fileInfo);
     }
   }, [remoteOffer]);
 
@@ -49,28 +45,27 @@ export default function useAnswer({
         })
         .then(answer => {
           debugger; // 6. Answer
-          rtcPeerConnection.setLocalDescription(answer);
+       return    rtcPeerConnection.setLocalDescription(answer);
+        })
+
+        .then(()=>{
+          debugger; // 7. Answer
+          sendSignalingMessage({
+            type: 'file-answer',
+            sdp: rtcPeerConnection.localDescription
+          });
         })
         .catch(err => {
-          debugger; // 6.1 .Answer
+          debugger; // 7.1 .Answer
           setAnswerError(err);
         });
     }
   }, [rtcPeerConnection, remoteOffer]);
 
   function sendLocalAnswer() {
-    debugger; // 7. Answer
-    sendSignalingMessage({
-      type: 'file-answer',
-      sdp: rtcPeerConnection.localDescription
-    });
+
+    
   }
 
-  useEffect(() => {
-    if (message && message instanceof ArrayBuffer) {
-      setRemoteFileChunk(message);
-    }
-  }, [message]);
-
-  return { answerError, sendLocalAnswer, remoteFileChunk, remoteFileInfo };
+  return { answerError, sendLocalAnswer };
 }

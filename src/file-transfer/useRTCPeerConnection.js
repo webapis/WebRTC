@@ -74,7 +74,8 @@ export default function useRTCPeerConnection({
         peerCon.close();
       };
       channel.onopen = () => {
-        startReadingFileBySlice({ readNext: true });
+        setDatachannelState('open');
+        // startReadingFileBySlice({ readNext: true });
         setDatachannelState('open');
       };
       channel.onmessage = event => {
@@ -103,7 +104,6 @@ export default function useRTCPeerConnection({
           peerCon.close();
         };
         channel.onopen = () => {
-          setDatachannelState('closed');
           setDatachannelState('open');
         };
         channel.onerror = err => {

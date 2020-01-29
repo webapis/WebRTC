@@ -6,15 +6,9 @@ export default function useOffer({
   rtcPeerConnection,
   signalingMessage,
   sendSignalingMessage,
-  remoteIceCandidates,
-  startReadingFileBySlice,
-  file,
-  message,
-  dataChannel,
-  localFileChunk
+  remoteIceCandidates
 }) {
   const [offerError, setOfferError] = useState(null);
-  const [cancelledSending, setCancelledSending] = useState(null);
   const [initiator, setInitiator] = useState(false);
 
   function initiateOffer() {
@@ -40,15 +34,9 @@ export default function useOffer({
         })
         .then(() => {
           debugger; // 5.offer
-          const fileInfo = {
-            size: file.size,
-            name: file.name,
-            type: file.type
-          };
           sendSignalingMessage({
             type: 'file-offer',
-            sdp: rtcPeerConnection.localDescription,
-            fileInfo
+            sdp: rtcPeerConnection.localDescription
           });
         })
         .catch(err => {
@@ -82,37 +70,6 @@ export default function useOffer({
         });
     }
   }, [signalingMessage, rtcPeerConnection]);
-
-  useEffect(() => {
-    if (
-      message &&
-      message.constructor === String &&
-      message.type &&
-      message.type === 'cancelled-recieving-file'
-    ) {
-      setCancelledSending(true);
-    }
-  }, [message]);
-
-  // function sendFileChunk() {
-  //   if (!cancelledSending) {
-  //     try {
-  //       dataChannel.send(localFileChunk);
-  //       startReadingFileBySlice({ readNext: true });
-  //     } catch (err) {
-  //       setOfferError(err);
-  //     }
-  //   } else {
-  //     startReadingFileBySlice({ readNext: false });
-  //     dataChannel.close();
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (localFileChunk) {
-  //   //  sendFileChunk();
-  //   }
-  // }, [localFileChunk]);
 
   return { initiateOffer, offerError };
 }
