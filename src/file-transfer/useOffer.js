@@ -12,28 +12,28 @@ export default function useOffer({
   const [initiator, setInitiator] = useState(false);
 
   function initiateOffer() {
-    debugger; // 1. offer
+   // debugger; // 1. offer
     setInitiator(true);
   }
 
   useEffect(() => {
     if (initiator) {
-      debugger; // 2. offer
+    //  debugger; // 2. offer
       createRTCPeerConnection(true);
     }
   }, [initiator]);
 
   useEffect(() => {
     if (rtcPeerConnection && initiator) {
-      debugger; // 3.offer
+   //   debugger; // 3.offer
       rtcPeerConnection
         .createOffer()
         .then(offer => {
-          debugger; // 4.offer
+       //   debugger; // 4.offer
           return rtcPeerConnection.setLocalDescription(offer);
         })
         .then(() => {
-          debugger; // 5.offer
+       //   debugger; // 5.offer
           sendSignalingMessage({
             type: 'file-offer',
             sdp: rtcPeerConnection.localDescription
@@ -52,7 +52,7 @@ export default function useOffer({
       signalingMessage &&
       signalingMessage.type === 'file-answer'
     ) {
-      debugger; // 7.offer
+    //  debugger; // 7.offer
       rtcPeerConnection
         .setRemoteDescription(signalingMessage.sdp)
         .then(() => {

@@ -8,28 +8,29 @@ import useWebRTC from './file-transfer/use-webrtc';
 import useUIState from './file-transfer/use-ui-state';
 import ErrorMessage from './ErrorMessage';
 import "./css/style.css";
+
 export default function Client({ currentUser, name, target,roomId='0d3729a6-d4c2-4af0-8e7a-1efc9ea0f428'}) {
 
   const {signalingMessage, sendSignalingMessage,error: signalingError,resetSignalingState}= usePusherSignaling({currentUser,roomId,target,name})
   const {handleFileChange, file, error:readerError, readProgress,startReadingFileBySlice,fileChunk,readComplete,resetFileReaderState} = useFileReader()
-  const {handleSendMessage, error:webRTCError,downloadProgress, state,closeDataChannel, assembledFile,remoteFileInfo} =useWebRTC({resetFileReaderState,resetSignalingState,readProgress,fileChunk,sendSignalingMessage,signalingMessage,startReadingFileBySlice,file})
-  const {uiState}= useUIState({state,file,readProgress,downloadProgress,readComplete})
+  const {handleSendMessage, error:webRTCError,uploadProgress, downloadProgress,state,closeDataChannel, assembledFile,remoteFileInfo} =useWebRTC({resetFileReaderState,resetSignalingState,readProgress,fileChunk,sendSignalingMessage,signalingMessage,startReadingFileBySlice,file})
+  const {uiState}= useUIState({state,file,readProgress,downloadProgress,readComplete,remoteFileInfo})
  
 
  
   if(signalingError){
-    return <ErrorMessage error={signalingError}/>
+    return <ErrorMessage error={signalingError} />
   }
-  else if(webRTCError){
+  if(webRTCError){
     return <ErrorMessage error={webRTCError} />
   }
-  else if(readerError){
+  if(readerError){
     return <ErrorMessage error={readerError} />
   }
   return (
     <div className="client">
       <div className="client-top">
-      <FileTransferView resetFileReaderState={resetFileReaderState}   remoteFileInfo={remoteFileInfo} assembledFile={assembledFile} closeDataChannel={closeDataChannel} downloadProgress={downloadProgress} state={state} handleSendMessage={handleSendMessage} readProgress={readProgress}  handleFileChange={handleFileChange} uiState={uiState}/>
+        <FileTransferView resetFileReaderState={resetFileReaderState} remoteFileInfo={remoteFileInfo} assembledFile={assembledFile} closeDataChannel={closeDataChannel} downloadProgress={downloadProgress} state={state} handleSendMessage={handleSendMessage} readProgress={uploadProgress} handleFileChange={handleFileChange} uiState={uiState} />
       </div>
       <div className="client-bottom">
         <WebRTCState datachannelState={state.datachannelState} signalingState={state.signalingState} connectionState={state.connectionState} iceConnectionState={state.iceConnectionState} iceGatheringState={state.iceGatheringState} />

@@ -63,6 +63,7 @@ export default function FileTransferView({
     handleSendMessage('cancelled-recieving-file');
   }
   function downloadFile() {
+   // e.preventDefault()
     setHaveLocalAnswer(false);
     closeDataChannel();
   }

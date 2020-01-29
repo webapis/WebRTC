@@ -4,8 +4,8 @@ import iceServers from './ice-servers';
 import useAnswer from './useAnswer';
 import useOffer from './useOffer';
 import useRTCPeerConnection from './useRTCPeerConnection';
-import useSender from './useSender';
-import useReciever from './useReciever';
+import useSender from './useFileSender';
+import useReciever from './useFileReciever';
 
 export default function useWebRTC({
   signalingMessage,
@@ -29,7 +29,7 @@ export default function useWebRTC({
     signalingMessage,
     startReadingFileBySlice
   });
-  const { answerError, sendLocalAnswer, remoteFileInfo } = useAnswer({
+  const { answerError } = useAnswer({
     createRTCPeerConnection,
     rtcPeerConnection,
     signalingMessage,
@@ -44,17 +44,17 @@ export default function useWebRTC({
     sendSignalingMessage,
     message,
     dataChannel,
-    localFileChunk: fileChunk,
     remoteIceCandidates,
     file
   });
-  const { downloadProgress } = useReciever({ message, dataChannel });
+  const { downloadProgress,remoteFileInfo,acceptFile,assembledFile } = useReciever({ message, dataChannel });
   const { uploadProgress } = useSender({
     message,
     dataChannel,
     startReadingFileBySlice,
     state,
-    file
+    file,
+    fileChunk
   });
 
   useEffect(() => {
@@ -70,11 +70,12 @@ export default function useWebRTC({
   function handleSendMessage(type) {
     switch (type) {
       case 'file-offer':
-        debugger;
+     
         initiateOffer();
         break;
       case 'file-answer':
-        sendLocalAnswer();
+   
+        acceptFile();
         break;
       case 'file-decline':
         sendSignalingMessage({ type: 'file-decline' });
@@ -95,9 +96,11 @@ export default function useWebRTC({
   return {
     handleSendMessage,
     error,
+    uploadProgress,
     downloadProgress,
     closeDataChannel,
     remoteFileInfo,
-    state
+    state,
+    assembledFile
   };
 }

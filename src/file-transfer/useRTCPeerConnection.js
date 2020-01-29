@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 export default function useRTCPeerConnection({
   iceServers,
   sendSignalingMessage,
-  signalingMessage,
-  startReadingFileBySlice
+  signalingMessage
 }) {
   const [rtcPeerConnection, setRTCPeerConnection] = useState(null);
   const [connectionState, setConnectionState] = useState(null);
@@ -18,31 +17,26 @@ export default function useRTCPeerConnection({
 
   const [message, setMessage] = useState(null);
 
-  //   const resetState = () => {
-  //     if (pc) {
-  //       pc.onicecandidate = null;
-  //       pc.onconnectionstatechange = null;
-  //       pc.onsignalingstatechange = null;
-  //       pc.oniceconnectionstatechange = null;
-  //       pc.onicegatheringstatechange = null;
-  //       pc.ontrack = null;
-  //       pc.ondatachannel = null;
-  //     }
-  //     setError(null);
-  //     setRemoteIceCandidates([]);
-  //     setRemoteOffer(null);
-  //     setRemoteFileInfo(null);
-  //     setInitiator(false);
-  //     setDatachannel(null);
-  //     setSignalingState(null);
-  //     setConnectionState(null);
-  //     setIceConnectionState(null);
-  //     setIceGatheringState(null);
-  //     setRemoteFileChunk(null);
-  //     setDatachannelState(null);
-  //     setCancelledSending(false);
-  //     setPc(null);
-  //   }
+    const resetState = () => {
+      if (rtcPeerConnection) {
+        rtcPeerConnection.onicecandidate = null;
+        rtcPeerConnection.onconnectionstatechange = null;
+        rtcPeerConnection.onsignalingstatechange = null;
+        rtcPeerConnection.oniceconnectionstatechange = null;
+        rtcPeerConnection.onicegatheringstatechange = null;
+        rtcPeerConnection.ontrack = null;
+        rtcPeerConnection.ondatachannel = null;
+      }
+      setDataChannelError(null);
+      setRemoteIceCandidates([]);
+      setDataChannel(null);
+      setSignalingState(null);
+      setConnectionState(null);
+      setIceConnectionState(null);
+      setIceGatheringState(null);
+      setDatachannelState(null);
+      setRTCPeerConnection(null);
+    }
 
   function createRTCPeerConnection(initiator) {
     const peerCon = new RTCPeerConnection(iceServers);
@@ -57,7 +51,7 @@ export default function useRTCPeerConnection({
     peerCon.onsignalingstatechange = () => {
       setSignalingState(peerCon.signalingState);
       if (peerCon.signalingState === 'closed') {
-        //  resetState();
+          resetState();
       }
     };
     peerCon.oniceconnectionstatechange = () => {
@@ -75,7 +69,6 @@ export default function useRTCPeerConnection({
       };
       channel.onopen = () => {
         setDatachannelState('open');
-        // startReadingFileBySlice({ readNext: true });
         setDatachannelState('open');
       };
       channel.onmessage = event => {
@@ -88,7 +81,7 @@ export default function useRTCPeerConnection({
       channel.onclose = () => {
         setDatachannelState('closed');
         setMessage(null);
-        //  peerCon.close();
+          peerCon.close();
       };
 
       setDataChannel(channel);

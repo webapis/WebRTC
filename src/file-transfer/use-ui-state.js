@@ -5,7 +5,8 @@ export default function useUIState({
   file,
   readProgress,
   downloadProgress,
-  readComplete
+  readComplete,
+  remoteFileInfo
 }) {
   const { signalingState } = state;
   const [sendingFile, setSendingFile] = useState(false);
@@ -24,10 +25,14 @@ export default function useUIState({
     }
   }, [file]);
 
-  useEffect(() => {
-    if (signalingState === 'have-remote-offer') {
+  useEffect(()=>{
+    if (remoteFileInfo) {
+
       setRemoteOfferRecived(true);
     }
+  },[remoteFileInfo])
+  useEffect(() => {
+  
     if (signalingState === 'have-local-offer') {
       setHaveLocalOffer(true);
     }
