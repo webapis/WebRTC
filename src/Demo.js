@@ -3,10 +3,10 @@ import Client from './Client';
 import usePusher, { getPusherConfig } from './signaling/pusher/usePusher';
 import ErrorMessage from './ErrorMessage';
 export default function Demo({ title, clientOneName, clientTwoName }) {
-  const { currentUser: clientOne, error: clientOneError } = usePusher(
+  const { currentUser: clientOne, error: clientOneError,connectToPusher :connectOne,connecting:connectingOne,chatManager:chmOne } = usePusher(
     getPusherConfig({ userId: clientOneName })
   );
-  const { currentUser: clientTwo, error: clientTwoError } = usePusher(
+  const { currentUser: clientTwo, error: clientTwoError,,connectToPusher :connectTwo,connecting:connectingTwo,chatManager:chmOne } = usePusher(
     getPusherConfig({ userId: clientTwoName })
   );
 
