@@ -16,7 +16,16 @@ export default function useUIState({
   const [sendingComplete, setSendingComplete] = useState(false);
   const [recievingComplete, setRecievingComplete] = useState(false);
   const [haveLocalOffer, setHaveLocalOffer] = useState(false);
+  const [connected,setConnected]= useState(null);
 
+  useEffect(()=>{
+    if(state && state.connectionState==='connected'){
+      setConnected(true)
+    }
+    else{
+      setConnected(false)
+    }
+  },[state])
   useEffect(() => {
     if (state && state.signalingState === 'have-remote-offer') {
       setRemoteOfferRecived(true);
@@ -84,7 +93,8 @@ export default function useUIState({
       remoteOfferRecieved,
       sendingComplete,
       recievingComplete,
-      haveLocalOffer
+      haveLocalOffer,
+      connected
     }
   };
 }

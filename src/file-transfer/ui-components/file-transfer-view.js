@@ -21,7 +21,8 @@ export default function FileTransferView({
     recievingFile,
     sendingComplete,
     recievingComplete,
-    haveLocalOffer
+    haveLocalOffer,
+    connected
   } = uiState;
   const [haveLocalAnswer, setHaveLocalAnswer] = useState(false);
   const fileLinkRef = useRef(null);
@@ -124,10 +125,11 @@ export default function FileTransferView({
     return (
       <div className="file-transfer">
         <div className="btn-container">
-          <button type="button" disabled={haveLocalAnswer} onClick={sendAnswer}>
-            Accept
+          <button type="button" disabled={haveLocalAnswer  || !connected} onClick={sendAnswer}>
+            {!connected ? 'connecting':'Accept'}
           </button>
           <button
+            hidden={!connected}
             type="button"
             disabled={haveLocalAnswer}
             onClick={sendDecline}
