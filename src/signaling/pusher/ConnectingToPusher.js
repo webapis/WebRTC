@@ -1,13 +1,19 @@
 import React from 'react';
 import pusher from './pusher.png';
-export default function ConnectingToPusher() {
-  return (
-    <div>
-      <h1>Connecting to...</h1>
-      <div>
-        {' '}
-        <img src={pusher} alt="pusher icon" />{' '}
+import './css/style.css';
+export default function ConnectingToPusher({
+  currentUser,
+  connectToPusher,
+  chatManager
+}) {
+  if (!currentUser && chatManager) {
+    return (
+      <div className="root">
+        <button className="connect-btn" onClick={connectToPusher}>
+          Connect to Signaling Service
+        </button>
       </div>
-    </div>
-  );
+    );
+  }
+  return null;
 }

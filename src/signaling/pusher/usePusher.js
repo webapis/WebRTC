@@ -22,27 +22,21 @@ export default function usePusher(config) {
     }
   }, []);
 
-  useEffect(() => {
-    if (chatManager) {
-      setConnecting(true);
-      chatManager
-        .connect()
-        .then(cUser => {
-          setCurrentUser(cUser);
-        })
-        .catch(err => {
-          setPusherError(err);
-        });
-    }
-  }, [chatManager]);
+  function connectToPusher() {
+    debugger;
+    setConnecting(true);
+    chatManager
+      .connect()
+      .then(cUser => {
+        setConnecting(false);
+        setCurrentUser(cUser);
+      })
+      .catch(err => {
+        setPusherError(err);
+      });
+  }
 
-  useEffect(() => {
-    if (currentUser) {
-      setConnecting(false);
-    }
-  }, [currentUser]);
-
-  return { currentUser, pusherError, connecting };
+  return { currentUser, pusherError, connecting, chatManager, connectToPusher };
 }
 
 export function getPusherConfig({ userId }) {
