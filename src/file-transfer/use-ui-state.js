@@ -18,6 +18,11 @@ export default function useUIState({
   const [haveLocalOffer, setHaveLocalOffer] = useState(false);
 
   useEffect(() => {
+    if (state && state.signalingState === 'have-remote-offer') {
+      setRemoteOfferRecived(true);
+    }
+  }, [state]);
+  useEffect(() => {
     if (file) {
       setFileSelected(true);
     } else {
@@ -25,14 +30,16 @@ export default function useUIState({
     }
   }, [file]);
 
-  useEffect(()=>{
-    if (remoteFileInfo) {
-
+  useEffect(() => {
+    if (
+      remoteFileInfo &&
+      remoteOfferRecieved &&
+      state.connectionState === 'connected'
+    ) {
       setRemoteOfferRecived(true);
     }
-  },[remoteFileInfo])
+  }, [remoteFileInfo, remoteOfferRecieved, state]);
   useEffect(() => {
-  
     if (signalingState === 'have-local-offer') {
       setHaveLocalOffer(true);
     }
@@ -63,6 +70,7 @@ export default function useUIState({
     }
 
     if (downloadProgress === 100) {
+      debugger;
       setRecievingFile(false);
       setRecievingComplete(true);
     }

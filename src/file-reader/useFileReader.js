@@ -105,7 +105,7 @@ export default function useFileReader() {
   function startReadingFileBySlice() {
 
     if (nextSlice < slices.length) {
- 
+
       reader.readAsArrayBuffer(
         file.slice(slices[nextSlice].start, slices[nextSlice].end)
       );

@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { useEffect, useState } from 'react';
 
 export default function useOffer({
@@ -6,13 +5,20 @@ export default function useOffer({
   rtcPeerConnection,
   signalingMessage,
   sendSignalingMessage,
-  remoteIceCandidates
+  remoteIceCandidates,
+  state
 }) {
   const [offerError, setOfferError] = useState(null);
   const [initiator, setInitiator] = useState(false);
 
+  useEffect(() => {
+    if (state && state.signalingState === 'closed') {
+      setOfferError(null);
+      setInitiator(false);
+    }
+  }, [state]);
   function initiateOffer() {
-   // debugger; // 1. offer
+   //  debugger; // 1. offer
     setInitiator(true);
   }
 
@@ -25,22 +31,22 @@ export default function useOffer({
 
   useEffect(() => {
     if (rtcPeerConnection && initiator) {
-   //   debugger; // 3.offer
+      //   debugger; // 3.offer
       rtcPeerConnection
         .createOffer()
         .then(offer => {
-       //   debugger; // 4.offer
+       //      debugger; // 4.offer
           return rtcPeerConnection.setLocalDescription(offer);
         })
         .then(() => {
-       //   debugger; // 5.offer
+         //    debugger; // 5.offer
           sendSignalingMessage({
             type: 'file-offer',
             sdp: rtcPeerConnection.localDescription
           });
         })
         .catch(err => {
-          debugger; // 6.1.offer
+        //     debugger; // 6.1.offer
           setOfferError(err);
         });
     }
@@ -49,10 +55,11 @@ export default function useOffer({
   useEffect(() => {
     if (
       rtcPeerConnection &&
-      signalingMessage && initiator &&
+      signalingMessage &&
+      initiator &&
       signalingMessage.type === 'file-answer'
     ) {
-      debugger; // 7.offer
+      //  debugger; // 7.offer
       rtcPeerConnection
         .setRemoteDescription(signalingMessage.sdp)
         .then(() => {
@@ -65,7 +72,7 @@ export default function useOffer({
           }
         })
         .catch(err => {
-          debugger; // 7.1.offer
+         //    debugger; // 7.1.offer
           setOfferError(err);
         });
     }

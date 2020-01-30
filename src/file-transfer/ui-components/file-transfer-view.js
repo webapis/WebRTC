@@ -63,9 +63,8 @@ export default function FileTransferView({
     handleSendMessage('cancelled-recieving-file');
   }
   function downloadFile() {
-   // e.preventDefault()
     setHaveLocalAnswer(false);
-    closeDataChannel();
+    handleSendMessage('file-downloaded');
   }
   if (recievingFile) {
     return (
@@ -148,9 +147,9 @@ export default function FileTransferView({
     <div className="file-transfer">
       <div className="btn-container">
         <button type="button" disabled={haveLocalOffer} onClick={sendOffer}>
-          Send File
+          {haveLocalOffer ? 'Connecting....':' Send File' }
         </button>
-        <button type="button" disabled={haveLocalOffer} onClick={sendOffer}>
+        <button hidden={haveLocalOffer} type="button" disabled={haveLocalOffer} onClick={sendOffer}>
           Cancel
         </button>
       </div>

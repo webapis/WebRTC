@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { useEffect, useState } from 'react';
 
 export default function useAnswer({
@@ -6,13 +5,22 @@ export default function useAnswer({
   rtcPeerConnection,
   signalingMessage,
   sendSignalingMessage,
-  remoteIceCandidates
+  remoteIceCandidates,
+  state
 }) {
   const [remoteOffer, setRemoteOffer] = useState(null);
   const [answerError, setAnswerError] = useState(null);
+
+  useEffect(() => {
+    if (state && state.signalingState === 'closed') {
+      setRemoteOffer(null);
+      setAnswerError(null);
+    }
+  }, [state]);
+
   useEffect(() => {
     if (signalingMessage && signalingMessage.type === 'file-offer') {
-   //   debugger; // 1. Answer
+    //  debugger; // 1. Answer
       setRemoteOffer(signalingMessage.sdp);
     }
   }, [signalingMessage]);
@@ -30,7 +38,7 @@ export default function useAnswer({
       rtcPeerConnection
         .setRemoteDescription(remoteOffer)
         .then(() => {
-     //     debugger; // 4.Answer
+        //  debugger; // 4.Answer
           if (remoteIceCandidates.length > 0) {
             for (const ice in remoteIceCandidates) {
               if (ice) {
@@ -40,15 +48,15 @@ export default function useAnswer({
           }
         })
         .then(() => {
-        //  debugger; // 5.Answer
+      //    debugger; // 5.Answer
           return rtcPeerConnection.createAnswer();
         })
         .then(answer => {
-       //   debugger; // 6. Answer
-       return    rtcPeerConnection.setLocalDescription(answer);
+        //  debugger; // 6. Answer
+          return rtcPeerConnection.setLocalDescription(answer);
         })
 
-        .then(()=>{
+        .then(() => {
        //   debugger; // 7. Answer
           sendSignalingMessage({
             type: 'file-answer',
@@ -56,16 +64,13 @@ export default function useAnswer({
           });
         })
         .catch(err => {
-          debugger; // 7.1 .Answer
+       //   debugger; // 7.1 .Answer
           setAnswerError(err);
         });
     }
   }, [rtcPeerConnection, remoteOffer]);
 
-  function sendLocalAnswer() {
-
-    
-  }
+  function sendLocalAnswer() {}
 
   return { answerError, sendLocalAnswer };
 }

@@ -17,26 +17,27 @@ export default function useRTCPeerConnection({
 
   const [message, setMessage] = useState(null);
 
-    const resetState = () => {
-      if (rtcPeerConnection) {
-        rtcPeerConnection.onicecandidate = null;
-        rtcPeerConnection.onconnectionstatechange = null;
-        rtcPeerConnection.onsignalingstatechange = null;
-        rtcPeerConnection.oniceconnectionstatechange = null;
-        rtcPeerConnection.onicegatheringstatechange = null;
-        rtcPeerConnection.ontrack = null;
-        rtcPeerConnection.ondatachannel = null;
-      }
-      setDataChannelError(null);
-      setRemoteIceCandidates([]);
-      setDataChannel(null);
-      setSignalingState(null);
-      setConnectionState(null);
-      setIceConnectionState(null);
-      setIceGatheringState(null);
-      setDatachannelState(null);
-      setRTCPeerConnection(null);
+  const resetState = () => {
+    if (rtcPeerConnection) {
+      rtcPeerConnection.onicecandidate = null;
+      rtcPeerConnection.onconnectionstatechange = null;
+      rtcPeerConnection.onsignalingstatechange = null;
+      rtcPeerConnection.oniceconnectionstatechange = null;
+      rtcPeerConnection.onicegatheringstatechange = null;
+      rtcPeerConnection.ontrack = null;
+      rtcPeerConnection.ondatachannel = null;
     }
+    setDataChannelError(null);
+    setRemoteIceCandidates([]);
+    setDataChannel(null);
+    setSignalingState(null);
+    setConnectionState(null);
+    setIceConnectionState(null);
+    setIceGatheringState(null);
+    setDatachannelState(null);
+    setRTCPeerConnection(null);
+    setMessage(null);
+  };
 
   function createRTCPeerConnection(initiator) {
     const peerCon = new RTCPeerConnection(iceServers);
@@ -51,7 +52,7 @@ export default function useRTCPeerConnection({
     peerCon.onsignalingstatechange = () => {
       setSignalingState(peerCon.signalingState);
       if (peerCon.signalingState === 'closed') {
-          resetState();
+        resetState();
       }
     };
     peerCon.oniceconnectionstatechange = () => {
@@ -62,6 +63,7 @@ export default function useRTCPeerConnection({
     };
     if (initiator) {
       const channel = peerCon.createDataChannel('chat');
+      channel.binaryType = 'arraybuffer';
       channel.onclose = () => {
         setDatachannelState('closed');
 
@@ -81,13 +83,14 @@ export default function useRTCPeerConnection({
       channel.onclose = () => {
         setDatachannelState('closed');
         setMessage(null);
-          peerCon.close();
+        peerCon.close();
       };
 
       setDataChannel(channel);
     } else {
       peerCon.ondatachannel = event => {
         const { channel } = event;
+        channel.binaryType = 'arraybuffer';
         channel.onmessage = e => {
           setMessage(e.data);
         };

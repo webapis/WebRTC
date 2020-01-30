@@ -30,6 +30,7 @@ export default function useWebRTC({
     startReadingFileBySlice
   });
   const { answerError } = useAnswer({
+    state,
     createRTCPeerConnection,
     rtcPeerConnection,
     signalingMessage,
@@ -38,6 +39,7 @@ export default function useWebRTC({
     message
   });
   const { initiateOffer, offerError } = useOffer({
+    state,
     createRTCPeerConnection,
     rtcPeerConnection,
     signalingMessage,
@@ -47,8 +49,13 @@ export default function useWebRTC({
     remoteIceCandidates,
     file
   });
-  const { downloadProgress,remoteFileInfo,acceptFile,assembledFile } = useReciever({ message, dataChannel });
-  const { uploadProgress } = useSender({
+  const {
+    downloadProgress,
+    remoteFileInfo,
+    acceptFile,
+    assembledFile
+  } = useReciever({ state, message, dataChannel });
+  const { uploadProgress, cancelledSending } = useSender({
     message,
     dataChannel,
     startReadingFileBySlice,
@@ -70,21 +77,26 @@ export default function useWebRTC({
   function handleSendMessage(type) {
     switch (type) {
       case 'file-offer':
-     
         initiateOffer();
         break;
       case 'file-answer':
-   
+        debugger;
         acceptFile();
         break;
       case 'file-decline':
         sendSignalingMessage({ type: 'file-decline' });
-
         break;
       case 'cancelled-recieving-file':
         dataChannel.send(JSON.stringify({ type: 'cancelled-recieving-file' }));
         break;
-
+      case 'cancelled-sending-file':
+        debugger;
+        cancelledSending();
+        break;
+      case 'file-downloaded':
+        debugger;
+        dataChannel.send(JSON.stringify({ type: 'file-downloaded' }));
+        break;
       default:
     }
   }
