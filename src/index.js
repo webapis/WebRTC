@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import PusherDemo from './signaling/demo/ConnectionDemo'
+import PusherDemo from './signaling/demo/PusherDemo'
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<PusherDemo />, document.getElementById('root'));
