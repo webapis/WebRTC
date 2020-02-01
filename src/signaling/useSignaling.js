@@ -84,7 +84,8 @@ export default function useSignaling({
         sendMessage(fisrtPart);
         sendMessage(secondPart);
       } else {
-        sendMessage({ message, target, name });
+        debugger;
+        sendMessage({ ...msg, target, name });
       }
     }
   }

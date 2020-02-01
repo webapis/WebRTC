@@ -73,7 +73,7 @@ export default function usePusher({
   return {
     signalingError,
     connectionState,
-    messageSizeLimit: 5,
+    messageSizeLimit: 4000,
     sendMessage,
     message,
     connectToService

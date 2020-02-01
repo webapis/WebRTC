@@ -1,47 +1,62 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-undef */
 import { useEffect, useState } from 'react';
 
 export default function useScaleDrone({ channel_id, room_name }) {
   const [drone, setDrone] = useState(null);
-  const [signalingMessage, setSignalingMessage] = useState(null);
-  const [connecting,setConnecting] =useState(false);
+  const [signalingError, setSignalingError] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [connectionState, setConnectionState] = useState('');
+
   useEffect(() => {
     if (drone) {
       const rm = drone.subscribe(room_name);
-      rm.on('open', error => {
-        if (error) {
-          return console.error(error);
+      rm.on('open', err => {
+        if (err) {
+     
+          setSignalingError(err);
         }
-        setConnecting(false)
+
+        setConnectionState('connected');
         // Connected to room
       });
 
       rm.on('message', msg => {
+   
         // Received a message sent to the room
-        setSignalingMessage(msg);
+        setMessage(msg.data);
       });
     }
   }, [drone]);
 
-  function sendSignalingMessage(msg) {
+  function sendMessage(msg) {
+
     drone.publish({
       room: room_name,
       message: msg
     });
   }
 
-  function connectToSignalingService() {
-      setConnecting(true);
+  function connectToService() {
+  
+    setConnectionState('connecting');
     const drn = new Scaledrone(channel_id);
-    drn.on('error', error => {
-      console.error('Error with connection:', error);
+    drn.on('error', err => {
+      setSignalingError(err);
     });
-    drn.on('close', event => {
-      console.log('Connection closed:', event);
+    drn.on('close', () => {
+      setConnectionState('');
     });
 
     setDrone(drn);
   }
 
-  return { signalingMessage, sendSignalingMessage, connectToSignalingService,connecting };
+  return {
+    signalingError,
+    connectionState,
+    messageSizeLimit: 4000,
+    sendMessage,
+    message,
+    connectToService
+  };
 }
