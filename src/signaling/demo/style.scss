@@ -1,8 +1,30 @@
 .connected {
-    display: flex;
-    height: 100vh;
-    margin: 0 auto;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  height: 100vh;
+  margin: 0 auto;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.connecting {
+  color: orange;
+}
+.connected {
+  color: greenyellow;
+}
+
+.root {
+  display: flex;
+}
+
+.client {
+  background-color: hotpink;
+  height: 40vh;
+  padding: 5px;
+}
+
+.messages{
+  height: 100px;
+  background-color: lightblue;
 }
