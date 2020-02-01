@@ -15,18 +15,10 @@ export default function useSignaling({
   useEffect(() => {
     if (message) {
       if (message.target === name) {
-        if (messageSizeLimit > 0) {
-          const messageSize = new Blob([JSON.stringify(message)]);
-          if (messageSize.size > messageSizeLimit) {
-            setPartialMessage(message);
-          }
+        if (message.order !== undefined) {
+          setPartialMessage(message);
         } else {
-          setSignalingMessage(message.msg);
-          if (message.msg.type === 'end' || message.msg.type === 'cancel') {
-            setMessages([]);
-            setPartialMessage(null);
-            setError(null);
-          }
+          setSignalingMessage(message);
         }
       }
     }
@@ -44,13 +36,22 @@ export default function useSignaling({
           setMessages([partialMessage]);
         } else if (msg && msg.order === 'first') {
           fullContent = msg.content + partialMessage.content;
-          setSignalingMessage({ sdp: JSON.parse(fullContent), type: msg.type });
+          setSignalingMessage({
+            message: JSON.parse(fullContent),
+            name: msg.name,
+            target: msg.target
+          });
           setMessages(prev => [
             ...prev.filter(e => e.id === partialMessage.id)
           ]);
         } else if (msg && msg.order === 'second') {
           fullContent = partialMessage.content + msg.content;
-          setSignalingMessage({ sdp: JSON.parse(fullContent), type: msg.type });
+          setSignalingMessage({
+            message: JSON.parse(fullContent),
+            name: msg.name,
+            target: msg.target
+          });
+
           setMessages(prev => [
             ...prev.filter(e => e.id === partialMessage.id)
           ]);
@@ -61,7 +62,7 @@ export default function useSignaling({
 
   function sendSignalingMessage(msg) {
     if (messageSizeLimit > 0) {
-      const messageSize = new Blob([JSON.stringify(message)]);
+      const messageSize = new Blob([JSON.stringify(msg)]);
       if (messageSize.size > messageSizeLimit) {
         const fullContent = JSON.stringify(msg);
         const id = new Date().getTime();
@@ -70,21 +71,20 @@ export default function useSignaling({
           id,
           order: 'first',
           target,
-          name,
-          type: msg.type
+          name
         };
         const secondPart = {
           content: fullContent.substring(fullContent.length / 2),
           id,
           order: 'second',
           target,
-          name,
-          type: msg.type
+          name
         };
+
         sendMessage(fisrtPart);
         sendMessage(secondPart);
       } else {
-        sendMessage({ msg, target, name });
+        sendMessage({ message, target, name });
       }
     }
   }

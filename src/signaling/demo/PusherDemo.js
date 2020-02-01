@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable react/jsx-filename-extension */
+import React, { useState, useEffect } from 'react';
 import usePusher from '../pusher/usePusher';
 import useSignaling from '../useSignaling';
 import ConnectToService from '../pusher/ConnectToService';
@@ -26,15 +27,12 @@ export default function PusherDemo() {
     return <div> {signalingError.message}</div>;
   }
   if (connectionState === '') {
-    debugger; //1
     return <ConnectToService connectToService={connectToService} />;
   }
   if (connectionState === 'connecting') {
-    debugger; //
     return <div>Connecting...</div>;
   }
   if (connectionState === 'connected') {
-    debugger; //
     return (
       <div className="root">
         <Client
@@ -59,12 +57,63 @@ export default function PusherDemo() {
 }
 
 const Client = ({ target, name, message, sendMessage, messageSizeLimit }) => {
-  const {
-    signalingMessage,
-    resetSignalingState,
-    sendSignalingMessage,
-    error
-  } = useSignaling({ target, name, message, sendMessage, messageSizeLimit });
+  const { signalingMessage, sendSignalingMessage } = useSignaling({
+    target,
+    name,
+    message,
+    sendMessage,
+    messageSizeLimit
+  });
+  const [text, setText] = useState('');
+  const [messages, setMessages] = useState([]);
 
-  return <div>Client</div>;
+  useEffect(() => {
+    if (messages.length > 0) {
+      debugger;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (signalingMessage) {
+      debugger;
+      if (messages.length === 0) {
+        debugger;
+        setMessages([signalingMessage]);
+      }
+      if (messages.length > 0) {
+        debugger;
+        setMessages(prev => [...prev, signalingMessage]);
+      }
+    }
+  }, [signalingMessage]);
+
+  function handleChange(e) {
+    const { value } = e.target;
+    setText(value);
+  }
+
+  function handleSendMessage() {
+    sendSignalingMessage({text });
+  }
+
+  return (
+    <div className="client">
+      <div>{name}</div>
+      <div className="messages">
+        {messages.length>0 &&
+          messages.map(m => {
+            return (
+              <div>
+                <div>{m && m.name && m.name}</div>
+                <div>{m && m.message.text && m.message.text}</div>
+              </div>
+            );
+          })}
+      </div>
+      <input type="text" onChange={handleChange} value={text} name="message" />
+      <button type="button" onClick={handleSendMessage}>
+        Send Message
+      </button>
+    </div>
+  );
 };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
+import { ChatManager, TokenProvider } from '@pusher/chatkit-client'
+
 export default function usePusher({
   instanceLocator,
   userId,
@@ -19,7 +20,7 @@ export default function usePusher({
   });
   useEffect(() => {
     if (chatManager) {
-      debugger; //3.
+   //   debugger; //3.
       chatManager
         .connect()
         .then(cUser => {
@@ -35,12 +36,12 @@ export default function usePusher({
   useEffect(() => {
     if (currentUser) {
       setConnectionState('connected');
-      debugger; // 4.
+   //   debugger; // 4.
       currentUser.subscribeToRoomMultipart({
         roomId,
         hooks: {
           onMessage: m => {
-            debugger;
+        //    debugger;
             const msg = JSON.parse(m.parts[0].payload.content);
             setMessage(msg);
           }
@@ -51,7 +52,7 @@ export default function usePusher({
   }, [currentUser]);
 
   function connectToService() {
-    debugger; // 2
+  //  debugger; // 2
     setConnectionState('connecting');
     setChatManager(
       new ChatManager({
@@ -72,11 +73,11 @@ export default function usePusher({
   return {
     signalingError,
     connectionState,
-    messageSizeLimit: 4000,
+    messageSizeLimit: 5,
     sendMessage,
     message,
     connectToService
   };
 }
 
-//currentUser.rooms[0].id
+

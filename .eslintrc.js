@@ -4,8 +4,10 @@ module.exports = {
         "es6": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
+        "airbnb",
+        "prettier",
+        // "eslint:recommended",
+        // "plugin:react/recommended"
     ],
     "globals": {
         "Atomics": "readonly",
