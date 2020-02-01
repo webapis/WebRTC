@@ -25,7 +25,7 @@ export default function useOffer({
       rtcPeerConnection
         .createOffer()
         .then(offer => {
-          rtcPeerConnection.setLocalDescription(offer);
+        return  rtcPeerConnection.setLocalDescription(offer);
         })
         .then(() => {
           sendSignalingMessage({
