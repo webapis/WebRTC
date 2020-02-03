@@ -20,4 +20,21 @@
 .connected {
   color: greenyellow;
 }
+
+.root {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.client {
+  background-color: hotpink;
+  height: 40vh;
+  padding: 5px;
+}
+
+.messages {
+  height: 100px;
+  background-color: lightblue;
+}
 /*# sourceMappingURL=style.css.map */

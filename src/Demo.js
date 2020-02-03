@@ -1,64 +1,52 @@
-import React from 'react';
+/* eslint-disable react/jsx-one-expression-per-line */
+import React, { useState } from 'react';
 import Client from './Client';
-import usePusher, { getPusherConfig } from './signaling/pusher/usePusher';
-import ErrorMessage from './ErrorMessage';
-import pusherIcon from './signaling/pusher/pusher.png';
-import './css/style.css';
+import useScaleDrone from './signaling/scaledrone/useScaleDrone';
+import ConnectToService from './signaling/pusher/ConnectToService';
 
-export default function Demo({ title, clientOneName, clientTwoName }) {
+export default function Demo({ title }) {
   const {
-    currentUser: clientOne,
-    error: clientOneError,
-    connectToPusher: connectOne,
-    connecting: connectingOne
-  } = usePusher(getPusherConfig({ userId: clientOneName }));
-  const {
-    currentUser: clientTwo,
-    error: clientTwoError,
-    connectToPusher: connectTwo,
-    connecting: connectingTwo
-  } = usePusher(getPusherConfig({ userId: clientTwoName }));
-  function startDemo() {
-    connectOne();
-    connectTwo();
+    signalingError,
+    connectionState,
+    messageSizeLimit,
+    sendMessage,
+    message,
+    connectToService
+  } = useScaleDrone({ channel_id: 'kgrfnwzdUtSa0se7', room_name: 'signaling' });
+
+  const [started, setStarted] = useState(false);
+
+  if (signalingError) {
+    return <div> {signalingError.message}</div>;
   }
-  if (clientOneError) {
-    return <ErrorMessage error={clientOneError} />;
+  if (connectionState === '') {
+    return <ConnectToService connectToService={connectToService} />;
   }
-  if (clientTwoError) {
-    return <ErrorMessage error={clientTwoError} />;
+  if (connectionState === 'connecting') {
+    return <div className="connection">Connecting to Signaling Service...</div>;
   }
-  if (!clientOne && !clientTwo && !connectingOne && !connectingTwo) {
-    return (
-      <div className="connection">
-        <button type="button" onClick={startDemo}>
-          Start Demo
-        </button>
-      </div>
-    );
-  }
-  if (connectingTwo || connectingOne) {
-    return (
-      <div className="connection">
-        <h3>Connecing.... to</h3>
-        <img width="100px" src={pusherIcon} alt="pusher icon" />
-      </div>
-    );
-  }
-  if (clientOne && clientTwo) {
+  if (connectionState === 'connected') {
     return (
       <div className="root">
         <h1 className="demo-title">{title}</h1>
         <div className="demo">
           <Client
-            currentUser={clientOne}
-            name={clientOneName}
-            target={clientTwoName}
+            started={started}
+            setStarted={setStarted}
+            target="mario"
+            name="dragos"
+            message={message}
+            sendMessage={sendMessage}
+            messageSizeLimit={messageSizeLimit}
           />
           <Client
-            currentUser={clientTwo}
-            name={clientTwoName}
-            target={clientOneName}
+            started={started}
+            setStarted={setStarted}
+            target="dragos"
+            name="mario"
+            message={message}
+            sendMessage={sendMessage}
+            messageSizeLimit={messageSizeLimit}
           />
         </div>
       </div>
