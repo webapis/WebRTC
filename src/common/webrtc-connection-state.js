@@ -60,17 +60,6 @@ export default function WebRTCConnectionState({
     };
     setRtcPeerConStates(preState => [...preState, newState]);
   }, [signalingState]);
-  useEffect(() => {
-    const newState = {
-      signalingState: { state: signalingState, changed: true },
-      connectionState: { state: connectionState, changed: false },
-      iceGatheringState: { state: iceGatheringState, changed: false },
-      iceConnectionState: { state: iceConnectionState, changed: false },
-      datachannelState: { state: datachannelState, changed: true },
-      timestamp: { time: new Date().toLocaleTimeString() }
-    };
-    setRtcPeerConStates(preState => [...preState, newState]);
-  }, [datachannelState]);
 
   return (
     <div className="table-container">

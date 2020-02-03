@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Client from './Client';
 import useScaleDrone from './signaling/scaledrone/useScaleDrone';
 import ConnectToService from './signaling/pusher/ConnectToService';
@@ -15,6 +15,8 @@ export default function Demo({ title }) {
     connectToService
   } = useScaleDrone({ channel_id: 'kgrfnwzdUtSa0se7', room_name: 'signaling' });
 
+  const [started,setStarted]= useState(false);
+
   if (signalingError) {
     return <div> {signalingError.message}</div>;
   }
@@ -22,7 +24,7 @@ export default function Demo({ title }) {
     return <ConnectToService connectToService={connectToService} />;
   }
   if (connectionState === 'connecting') {
-    return <div>Connecting...</div>;
+    return <div className="connect">Connecting to Signaling Service...</div>;
   }
   if (connectionState === 'connected') {
     return (
@@ -30,6 +32,8 @@ export default function Demo({ title }) {
         <h1 className="demo-title">{title}</h1>
         <div className="demo">
           <Client
+            started={started}
+            setStarted={setStarted}
             target="mario"
             name="dragos"
             message={message}
@@ -37,6 +41,8 @@ export default function Demo({ title }) {
             messageSizeLimit={messageSizeLimit}
           />
           <Client
+            started={started}
+            setStarted={setStarted}
             target="dragos"
             name="mario"
             message={message}

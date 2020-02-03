@@ -11,6 +11,7 @@ export default function StateTable({ rtcPeerConStates }) {
           <th>SignalingState</th>
           <th>iceGatheringState</th>
           <th>iceConnectionState</th>
+    
           <th>Timestamp</th>
         </tr>
       </thead>
@@ -21,7 +22,7 @@ export default function StateTable({ rtcPeerConStates }) {
               <td
                 style={{
                   backgroundColor:
-                    s.connectionState.changed === true ? 'orange' : 'yellow'
+                    s.connectionState.changed === true ? 'orange' : ''
                 }}
               >
                 {s.connectionState.state}
@@ -29,7 +30,7 @@ export default function StateTable({ rtcPeerConStates }) {
               <td
                 style={{
                   backgroundColor:
-                    s.signalingState.changed === true ? 'orange' : 'yellow'
+                    s.signalingState.changed === true ? 'orange' : ''
                 }}
               >
                 {s.signalingState.state}
@@ -37,7 +38,7 @@ export default function StateTable({ rtcPeerConStates }) {
               <td
                 style={{
                   backgroundColor:
-                    s.iceGatheringState.changed === true ? 'orange' : 'yellow'
+                    s.iceGatheringState.changed === true ? 'orange' : ''
                 }}
               >
                 {s.iceGatheringState.state}
@@ -45,7 +46,7 @@ export default function StateTable({ rtcPeerConStates }) {
               <td
                 style={{
                   backgroundColor:
-                    s.iceConnectionState.changed === true ? 'orange' : 'yellow'
+                    s.iceConnectionState.changed === true ? 'orange' : ''
                 }}
               >
                 {s.iceConnectionState.state}

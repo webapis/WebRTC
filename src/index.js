@@ -7,7 +7,7 @@ import Demo from './Demo';
 
 
 ReactDOM.render(
-  <Demo title="Text Chat Demo" clientOneName="gon" clientTwoName="kon" />,
+  <Demo title="Peer to Peer Text Chat Demo using WebRTC" />,
   document.getElementById('root')
 );
 

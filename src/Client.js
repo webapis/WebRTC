@@ -12,7 +12,9 @@ export default function Client({
   name,
   message,
   sendMessage,
-  messageSizeLimit
+  messageSizeLimit,
+  started,
+  setStarted
 }) {
   const { signalingMessage, sendSignalingMessage } = useSignaling({
     target,
@@ -31,6 +33,7 @@ export default function Client({
   } = useWebRTC({ name, signalingMessage, sendSignalingMessage, iceServers });
 
   function createOffer() {
+    setStarted(true)
     initiateOffer();
   }
 
@@ -51,8 +54,8 @@ export default function Client({
         )}
         {state.connectionState !== 'connected' && (
           <div className="connect">
-            <button type="button" onClick={createOffer}>
-              Connect
+            <button type="button" disabled={started} onClick={createOffer}>
+              Connect to Peer
             </button>
           </div>
         )}
