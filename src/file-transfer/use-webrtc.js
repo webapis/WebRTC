@@ -1,4 +1,4 @@
-/* eslint-disable no-debugger */
+
 import { useState, useEffect } from 'react';
 import iceServers from './ice-servers';
 import useAnswer from './useAnswer';
@@ -80,7 +80,7 @@ export default function useWebRTC({
         initiateOffer();
         break;
       case 'file-answer':
-        debugger;
+
         acceptFile();
         break;
       case 'file-decline':
@@ -90,11 +90,11 @@ export default function useWebRTC({
         dataChannel.send(JSON.stringify({ type: 'cancelled-recieving-file' }));
         break;
       case 'cancelled-sending-file':
-        debugger;
+  
         cancelledSending();
         break;
       case 'file-downloaded':
-        debugger;
+      
         dataChannel.send(JSON.stringify({ type: 'file-downloaded' }));
         break;
       default:

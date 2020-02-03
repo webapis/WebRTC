@@ -78,8 +78,8 @@ export default function useUIState({
       setRecievingFile(true);
     }
 
-    if (downloadProgress === 100) {
-      debugger;
+    if (downloadProgress === 100 || downloadProgress >100) {
+  
       setRecievingFile(false);
       setRecievingComplete(true);
     }
