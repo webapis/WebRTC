@@ -91,6 +91,7 @@ export default function useWebRTC({
       case 'cancel':
         closeConnection('cancel');
         break;
+
       default:
     }
   }

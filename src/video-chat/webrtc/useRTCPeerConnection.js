@@ -12,40 +12,29 @@ export default function useRTCPeerConnection({
   const [iceConnectionState, setIceConnectionState] = useState(null);
   const [iceGatheringState, setIceGatheringState] = useState(null);
   const [remoteIceCandidates, setRemoteIceCandidates] = useState([]);
-  const [initiator, setInitiator] = useState(undefined);
+
+  function resetState() {
+    setRemoteMediaStream(null);
+    setSignalingState(null);
+    setConnectionState(null);
+    setIceConnectionState(null);
+    setIceGatheringState(null);
+    setRemoteIceCandidates([]);
+  }
+
   function setRemoteIce(sdp) {
     if (rtcPeerConnection && rtcPeerConnection.remoteDescription) {
       rtcPeerConnection.addIceCandidate(sdp);
-      debugger;
     } else {
-      debugger;
-      setRemoteIceCandidates(prev => [...prev, signalingMessage.sdp]);
+      setRemoteIceCandidates(prev => [...prev, sdp]);
     }
   }
-  useEffect(() => {
-    if (
-      signalingMessage &&
-      signalingMessage.type === 'ice' &&
-      signalingMessage.sdp
-    ) {
-      if (rtcPeerConnection && rtcPeerConnection.remoteDescription) {
-        rtcPeerConnection.addIceCandidate(signalingMessage.sdp);
-      } else {
-        debugger;
-        setRemoteIceCandidates(prev => [...prev, signalingMessage.sdp]);
-      }
-    }
-  }, [signalingMessage, rtcPeerConnection]);
+
   function createRTCPeerConnection(init) {
-    if (init) {
-      setInitiator(true);
-    }
     const peerCon = new RTCPeerConnection(iceServers);
     peerCon.initiator = init;
     peerCon.onicecandidate = e => {
-      debugger;
       if (e.candidate) {
-        debugger; // 8. Caller
         sendSignalingMessage({
           sdp: e.candidate,
           type: 'ice',
@@ -54,14 +43,11 @@ export default function useRTCPeerConnection({
       }
     };
     peerCon.onconnectionstatechange = () => {
-      debugger;
       setConnectionState(peerCon.connectionState);
     };
     peerCon.onsignalingstatechange = () => {
       setSignalingState(peerCon.signalingState);
       if (peerCon.signalingState === 'closed') {
-        // debugger;
-
         peerCon.onicecandidate = null;
         peerCon.onconnectionstatechange = null;
         peerCon.onsignalingstatechange = null;
@@ -78,7 +64,6 @@ export default function useRTCPeerConnection({
       setIceGatheringState(peerCon.iceGatheringState);
     };
     peerCon.ontrack = e => {
-      debugger; //3.1.Callee  //7.1 Caller
       setRemoteMediaStream(e.streams[0]);
     };
 
@@ -90,18 +75,10 @@ export default function useRTCPeerConnection({
       resetState();
     }
   }, [rtcPeerConnection]);
-  const resetState = () => {
-    setRemoteMediaStream(null);
-    setSignalingState(null);
-    setConnectionState(null);
-    setIceConnectionState(null);
-    setIceGatheringState(null);
-    setRemoteIceCandidates([]);
-  };
 
   useEffect(() => {
-    if (signalingMessage) {
-      switch (signalingMessage.type) {
+    if (signalingMessage && rtcPeerConnection) {
+      switch (signalingMessage.message.type) {
         case 'end':
           rtcPeerConnection.close();
           break;
@@ -116,12 +93,12 @@ export default function useRTCPeerConnection({
 
           break;
         case 'ice':
-          setRemoteIce(signalingMessage.sdp);
+          setRemoteIce(signalingMessage.message.sdp);
           break;
         default:
       }
     }
-  }, [signalingMessage]);
+  }, [signalingMessage, rtcPeerConnection]);
 
   function closeConnection(type) {
     switch (type) {

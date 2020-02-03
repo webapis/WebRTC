@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { useEffect, useState } from 'react';
 
 export default function useCaller({
@@ -20,33 +21,27 @@ export default function useCaller({
   useEffect(() => {
     return () => {
       if (state.signalingState === 'closed') {
-        // debugger;
         resetState();
       }
     };
   });
   function initiateOffer() {
-    debugger; // 1.Caller
     setInitiated(true);
   }
   useEffect(() => {
     if (initiated) {
-      debugger; // 2 Caller
-
       getLocalMediaStream();
     }
   }, [initiated]);
 
   useEffect(() => {
     if (localMediaStream && initiated) {
-      debugger; //3. Caller
       createRTCPeerConnection(true);
     }
   }, [localMediaStream, initiated]);
 
   useEffect(() => {
-    if (rtcPeerConnection && localMediaStream && initiated) {
-      debugger; //4.Caller
+    if (rtcPeerConnection && localMediaStream && initiated   && rtcPeerConnection.signalingState !=='closed') {
       localMediaStream.getVideoTracks().forEach(t => {
         rtcPeerConnection.addTrack(t, localMediaStream);
       });
@@ -55,22 +50,18 @@ export default function useCaller({
 
   useEffect(() => {
     if (rtcPeerConnection && rtcPeerConnection.getReceivers().length > 0) {
-      debugger; //5.Caller
       rtcPeerConnection
         .createOffer()
         .then(offer => {
-          debugger; //6.Caller
           return rtcPeerConnection.setLocalDescription(offer);
         })
         .then(() => {
-          debugger; // 7. Caller
           sendSignalingMessage({
             sdp: rtcPeerConnection.localDescription,
             type: 'offer'
           });
         })
         .catch(err => {
-          debugger; //7.1 Caller
           setCallerError(err);
         });
     }
@@ -79,16 +70,14 @@ export default function useCaller({
   useEffect(() => {
     if (
       signalingMessage &&
-      signalingMessage.type == 'answer' &&
+      signalingMessage.message.type === 'answer' &&
       rtcPeerConnection
     ) {
-      debugger; // 8. Caller
       rtcPeerConnection
-        .setRemoteDescription(signalingMessage.sdp.sdp)
+        .setRemoteDescription(signalingMessage.message.sdp)
         .then(() => {
-          //  debugger; //8.Caller
           if (remoteIceCandidates.length > 0) {
-            for (let ice in remoteIceCandidates) {
+            for (const ice in remoteIceCandidates) {
               if (ice) {
                 rtcPeerConnection.addIceCandidate(remoteIceCandidates[ice]);
               }
@@ -96,7 +85,7 @@ export default function useCaller({
           }
         })
         .catch(err => {
-          setCallerError(err); //8.1. Caller
+          setCallerError(err); // 8.1. Caller
         });
     }
   }, [signalingMessage, rtcPeerConnection]);

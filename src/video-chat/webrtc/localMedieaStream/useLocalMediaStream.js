@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import getlocalUserMedia from './getMediaStream';
+
 export default function useLocalMediaStream({ mediaConstraints, state }) {
   const [localMediaStream, setLocalMediaStream] = useState(null);
 
@@ -12,7 +13,7 @@ export default function useLocalMediaStream({ mediaConstraints, state }) {
   useEffect(() => {
     return () => {
       if (state.signalingState === 'closed') {
-          debugger;
+      
         resetState();
       }
     };
@@ -20,10 +21,10 @@ export default function useLocalMediaStream({ mediaConstraints, state }) {
   function getLocalMediaStream() {
     getlocalUserMedia(mediaConstraints, (error, media) => {
       if (error) {
-          debugger;
+   
         setLocalMediaStreamError(error);
       } else {
-          debugger; // 1.1. Caller
+    
         setLocalMediaStream(media);
       }
     });

@@ -3,7 +3,12 @@ module.exports = {
     browser: true,
     es6: true
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  extends: [
+    'airbnb',
+    'prettier'
+    // "eslint:recommended",
+    // "plugin:react/recommended"
+  ],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly'
@@ -17,7 +22,7 @@ module.exports = {
   },
   plugins: ['react'],
   rules: {
-    'react/prop-types': 0
-    // 'react-hooks/exhaustive-deps': 0
+    'react/prop-types': 0,
+    'react/jsx-filename-extension': 0
   }
 };

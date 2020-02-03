@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { useEffect, useState } from 'react';
 
 export default function useCallee({
@@ -21,32 +22,31 @@ export default function useCallee({
   useEffect(() => {
     return () => {
       if (state.signalingState === 'closed') {
-        //  debugger;
         resetState();
       }
     };
   });
   useEffect(() => {
-    if (signalingMessage && signalingMessage.type === 'offer') {
-      debugger; //1.Callee
-      setRemoteOffer(signalingMessage.sdp.sdp);
+   
+    if (signalingMessage && signalingMessage.message.type === 'offer') {
+    
+      setRemoteOffer(signalingMessage.message.sdp);
     }
   }, [signalingMessage]);
   useEffect(() => {
     if (remoteOffer) {
-      debugger; //1.1 Caller
+
       createRTCPeerConnection(false);
     }
   }, [remoteOffer]);
   useEffect(() => {
     if (rtcPeerConnection && remoteOffer) {
-      debugger; //2.Callee
+ 
       rtcPeerConnection
         .setRemoteDescription(remoteOffer)
         .then(() => {
-          debugger; //3.Callee
           if (remoteIceCandidates.length > 0) {
-            for (let ice in remoteIceCandidates) {
+            for (const ice in remoteIceCandidates) {
               if (ice) {
                 rtcPeerConnection.addIceCandidate(remoteIceCandidates[ice]);
               }
@@ -54,22 +54,18 @@ export default function useCallee({
           }
         })
         .catch(err => {
-          debugger; //3.2
           setCalleeError(err);
         });
     }
   }, [rtcPeerConnection, remoteOffer]);
 
   function initiateAnswer() {
-    debugger; //4. Callee
     getLocalMediaStream();
   }
 
   useEffect(() => {
-    if (localMediaStream && rtcPeerConnection && remoteOffer) {
-      debugger; //5. Callee
+    if (localMediaStream && rtcPeerConnection && remoteOffer && rtcPeerConnection.signalingState !=='closed') {
       localMediaStream.getVideoTracks().forEach(t => {
-        debugger;
         rtcPeerConnection.addTrack(t, localMediaStream);
       });
       setLocalTrackAdded(true);
@@ -82,24 +78,18 @@ export default function useCallee({
       rtcPeerConnection &&
       rtcPeerConnection.getReceivers().length > 0
     ) {
-      debugger; // 6.Callee;
-
       rtcPeerConnection
         .createAnswer()
         .then(answer => {
-          debugger; // 7.Callee
-         return rtcPeerConnection.setLocalDescription(answer);
-       
+          return rtcPeerConnection.setLocalDescription(answer);
         })
-        .then(()=>{
-          debugger; // 8. Callee
+        .then(() => {
           sendSignalingMessage({
             sdp: rtcPeerConnection.localDescription,
             type: 'answer'
           });
         })
         .catch(err => {
-          debugger; // 8.1 Callee
           setCalleeError(err);
         });
     }
