@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Client from './Client';
 import useScaleDrone from './signaling/scaledrone/useScaleDrone';
 import ConnectToService from './signaling/pusher/ConnectToService';
@@ -16,6 +16,13 @@ export default function Demo({ title }) {
 
   const [started, setStarted] = useState(false);
 
+  useEffect(()=>{
+    if(connectionState){
+      debugger;
+      
+    }
+  },[connectionState])
+
   if (signalingError) {
     return <div> {signalingError.message}</div>;
   }
@@ -30,24 +37,17 @@ export default function Demo({ title }) {
       <div className="root">
         <h1 className="demo-title">{title}</h1>
         <div className="demo">
-          <Client
-            started={started}
-            setStarted={setStarted}
-            target="mario"
-            name="dragos"
-            message={message}
-            sendMessage={sendMessage}
-            messageSizeLimit={messageSizeLimit}
-          />
-          <Client
-            started={started}
-            setStarted={setStarted}
-            target="dragos"
+          {/* <Client
             name="mario"
+            started={started}
+            setStarted={setStarted}
+            conference_name="conference_name"
             message={message}
             sendMessage={sendMessage}
             messageSizeLimit={messageSizeLimit}
           />
+        */}
+        Client
         </div>
       </div>
     );

@@ -13,7 +13,7 @@ export default function useScaleDrone({ channel_id, room_name }) {
       const rm = drone.subscribe(room_name);
       rm.on('open', err => {
         if (err) {
-     
+          debugger;
           setSignalingError(err);
         }
 
@@ -22,7 +22,7 @@ export default function useScaleDrone({ channel_id, room_name }) {
       });
 
       rm.on('message', msg => {
-   
+        debugger;
         // Received a message sent to the room
         setMessage(msg.data);
       });
@@ -30,7 +30,6 @@ export default function useScaleDrone({ channel_id, room_name }) {
   }, [drone]);
 
   function sendMessage(msg) {
-
     drone.publish({
       room: room_name,
       message: msg
@@ -38,13 +37,15 @@ export default function useScaleDrone({ channel_id, room_name }) {
   }
 
   function connectToService() {
-  
+    debugger;
     setConnectionState('connecting');
     const drn = new Scaledrone(channel_id);
     drn.on('error', err => {
+      debugger;
       setSignalingError(err);
     });
     drn.on('close', () => {
+      debugger;
       setConnectionState('');
     });
 

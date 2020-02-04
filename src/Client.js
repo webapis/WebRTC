@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import WebRTCState from './common/webrtc-connection-state';
-import VideoChatView from './video-chat/ui-components/VideoChatView';
-import useVideoChatUiState from './video-chat/webrtc/use-ui-state';
+import VideoConferenceView from './video-conference/ui-components/VideoConferenceView';
+import useVideoConferenceUIState from './video-conference/webrtc/useVideoConferenceUIState';
 import useSignaling from './signaling/useSignaling';
-import iceServers from './video-chat/webrtc/ice-servers';
-import useWebRTC from './video-chat/webrtc/use-webrtc';
+import iceServers from './video-conference/webrtc/ice-servers';
+import useWebRTC from './video-conference/webrtc/use-webrtc';
 import './css/style.css';
 
 const mediaSize = {
@@ -43,11 +43,11 @@ export default function Client({
     mediaConstraints,
     iceServers
   });
-  const { uiState } = useVideoChatUiState({ state });
+  const { uiState } = useVideoConferenceUIState({ state });
   return (
     <div className="client">
       <div className="client-top">
-        <VideoChatView
+        <VideoConferenceView
           name={name}
           target={target}
           mediaSize={mediaSize}
