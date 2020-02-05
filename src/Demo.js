@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState,useEffect } from 'react';
-import Client from './Client';
+import React, { useState, useEffect } from 'react';
 import useScaleDrone from './signaling/scaledrone/useScaleDrone';
 import ConnectToService from './signaling/pusher/ConnectToService';
+import VideoConferenceView from './video-conference/ui-components/VideoConferenceView';
 
 export default function Demo({ title }) {
   const {
@@ -16,12 +16,11 @@ export default function Demo({ title }) {
 
   const [started, setStarted] = useState(false);
 
-  useEffect(()=>{
-    if(connectionState){
+  useEffect(() => {
+    if (connectionState) {
       debugger;
-      
     }
-  },[connectionState])
+  }, [connectionState]);
 
   if (signalingError) {
     return <div> {signalingError.message}</div>;
@@ -34,20 +33,14 @@ export default function Demo({ title }) {
   }
   if (connectionState === 'connected') {
     return (
-      <div className="root">
+      <div>
         <h1 className="demo-title">{title}</h1>
-        <div className="demo">
-          {/* <Client
-            name="mario"
-            started={started}
-            setStarted={setStarted}
-            conference_name="conference_name"
-            message={message}
-            sendMessage={sendMessage}
-            messageSizeLimit={messageSizeLimit}
+        <div>
+          <VideoConferenceView
+            signalingMessage={message}
+            sendSignalingMessage={sendMessage}
+            conferenceName="video-conference"
           />
-        */}
-        Client
         </div>
       </div>
     );

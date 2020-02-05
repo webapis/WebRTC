@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 export default function useRTCPeerConnection({
   iceServers,
   sendSignalingMessage,
-  signalingMessage
+  signalingMessage,
+  remoteParticipant
 }) {
   const [rtcPeerConnection, setRtcPeerConnection] = useState(null);
   const [remoteMediaStream, setRemoteMediaStream] = useState(null);
@@ -36,9 +37,12 @@ export default function useRTCPeerConnection({
     peerCon.onicecandidate = e => {
       if (e.candidate) {
         sendSignalingMessage({
-          sdp: e.candidate,
-          type: 'ice',
-          initiator: peerCon.init
+          message: {
+            sdp: e.candidate,
+            type: 'ice',
+            initiator: peerCon.init,
+            target: remoteParticipant
+          }
         });
       }
     };
@@ -103,18 +107,24 @@ export default function useRTCPeerConnection({
   function closeConnection(type) {
     switch (type) {
       case 'decline':
-        sendSignalingMessage({ type: 'decline' });
+        sendSignalingMessage({
+          message: { type: 'decline', target: remoteParticipant }
+        });
         rtcPeerConnection.close();
         break;
       case 'end':
-        sendSignalingMessage({ type: 'end' });
+        sendSignalingMessage({
+          message: { type: 'end', target: remoteParticipant }
+        });
         rtcPeerConnection.close();
         break;
       case 'ignore':
         rtcPeerConnection.close();
         break;
       case 'cancel':
-        sendSignalingMessage({ type: 'cancel' });
+        sendSignalingMessage({
+          message: { type: 'cancel', target: remoteParticipant }
+        });
         rtcPeerConnection.close();
         break;
       default:

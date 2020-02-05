@@ -8,7 +8,9 @@ export default function useWebRTC({
   iceServers,
   signalingMessage,
   sendSignalingMessage,
-  mediaConstraints
+  mediaConstraints,
+  remoteParticipant,
+  name
 }) {
   const {
     remoteMediaStream,
@@ -20,7 +22,8 @@ export default function useWebRTC({
   } = useRTCPeerConnection({
     sendSignalingMessage,
     iceServers,
-    signalingMessage
+    signalingMessage,
+    remoteParticipant
   });
   const [error, setError] = useState(null);
 
@@ -40,7 +43,9 @@ export default function useWebRTC({
     rtcPeerConnection,
     localMediaStream,
     getLocalMediaStream,
-    remoteIceCandidates
+    remoteIceCandidates,
+    remoteParticipant,
+    name
   });
   const { initiateAnswer, calleeError } = useAnswer({
     state,
@@ -50,14 +55,16 @@ export default function useWebRTC({
     rtcPeerConnection,
     localMediaStream,
     getLocalMediaStream,
-    remoteIceCandidates
+    remoteIceCandidates,
+    remoteParticipant,
+    name
   });
   function resetState() {
     setError(null);
   }
   useEffect(() => {
     if (!rtcPeerConnection) {
-    //  debugger;
+      //  debugger;
       resetState();
     }
   }, [rtcPeerConnection]);
