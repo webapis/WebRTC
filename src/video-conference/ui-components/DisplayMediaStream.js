@@ -1,12 +1,24 @@
-  
 import React, { useRef, useEffect } from 'react';
 import './css/style.css';
-export default function DisplayMediaStream({ mediaStream, width, title }) {
+export default function DisplayMediaStream({
+  mediaStream,
+  width,
+  title,
+  onPlay
+}) {
   const videoRef = useRef(null);
-
+  function onLoadedData() {
+    const state = videoRef.current.readyState;
+    if (state === 4) {
+     
+        onPlay();
+     
+    
+    }
+    debugger;
+  }
   useEffect(() => {
     if (videoRef.current && mediaStream !== null) {
-
       videoRef.current.srcObject = mediaStream;
     }
 
@@ -27,7 +39,12 @@ export default function DisplayMediaStream({ mediaStream, width, title }) {
           position: 'relative'
         }}
       >
-        <video width={width} autoPlay ref={videoRef} />
+        <video
+          onLoadedData={onLoadedData}
+          width={width}
+          autoPlay
+          ref={videoRef}
+        />
         <div
           style={{
             position: 'absolute',

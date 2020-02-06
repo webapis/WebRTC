@@ -34,6 +34,7 @@ export default function useCallee({
     if (
       signalingMessage &&
       signalingMessage.message.target === name &&
+      signalingMessage.message.name===remoteParticipant &&
       signalingMessage.message.type === 'offer'
     ) {
       debugger; // 1 Answer

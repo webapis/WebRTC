@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import useScaleDrone from './signaling/scaledrone/useScaleDrone';
 import ConnectToService from './signaling/pusher/ConnectToService';
 import VideoConferenceView from './video-conference/ui-components/VideoConferenceView';
+import './css/style.css'
 
 export default function Demo({ title }) {
   const {
@@ -33,9 +34,9 @@ export default function Demo({ title }) {
   }
   if (connectionState === 'connected') {
     return (
-      <div>
+      <div className="root">
         <h1 className="demo-title">{title}</h1>
-        <div>
+        <div className="demo">
           <VideoConferenceView
             signalingMessage={message}
             sendSignalingMessage={sendMessage}

@@ -108,6 +108,7 @@ export default function useWebRTC({
     state,
     localMediaStream,
     remoteMediaStream,
-    handleSendMessage
+    handleSendMessage,
+    initiateOffer
   };
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useWebRTC from '../webrtc/use-webrtc';
 import iceServers from '../webrtc/ice-servers';
 import DisplayMediaStream from './DisplayMediaStream';
@@ -10,7 +10,7 @@ export default function ParticipantView({
   remoteParticipant,
   name
 }) {
-  const { state, remoteMediaStream } = useWebRTC({
+  const { state, remoteMediaStream, initiateOffer } = useWebRTC({
     signalingMessage,
     sendSignalingMessage,
     remoteParticipant,
@@ -18,9 +18,32 @@ export default function ParticipantView({
     iceServers,
     mediaConstraints: { video: true, audio: false }
   });
+  const [joined, setJoined] = useState(false);
+  useEffect(() => {
+    if (
+      signalingMessage &&
+      signalingMessage.message &&
+      signalingMessage.message.type === 'joined-conference' &&
+      signalingMessage.message.participant === name
+    ) {
+   
+      setJoined(true);
+    }
 
+    if (
+      signalingMessage &&
+      signalingMessage.message &&
+      signalingMessage.message.type === 'joined-conference' &&
+      signalingMessage.message.participant === remoteParticipant &&
+      joined
+    ) {
+  
+      initiateOffer();
+    }
+  }, [signalingMessage]);
   return (
     <div className="participant">
+      <div className="target">{remoteParticipant}</div>
       <DisplayMediaStream mediaStream={remoteMediaStream} width="100" />
     </div>
   );

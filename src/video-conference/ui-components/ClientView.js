@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ParticipantView from './ParticipantView';
 import DisplayMediaStream from './DisplayMediaStream';
+import AsyncBtn from './async-btn/AsyncBtn';
 import './css/style.css';
 
 export default function ClientView({
@@ -8,19 +9,36 @@ export default function ClientView({
   conferenceName,
   participantOne,
   participantTwo,
-  localMediaStream,
   sendSignalingMessage,
   signalingMessage
 }) {
+  const [localMediaStream, setLocalMediaStream] = useState(null);
+  const [joining, setJoining] = useState(false);
+  const [leaving,setLeaving]= useState(false);
   function joinConference() {
-    sendSignalingMessage({
-      message: { participant: name, type: 'joined-conference' }
-    });
+    setJoining(true);
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: false })
+      .then(media => {
+        setLocalMediaStream(media);
+      });
   }
+  function leaveConference () {}
 
+  useEffect(() => {
+    if (localMediaStream) {
+      sendSignalingMessage({
+        message: { participant: name, type: 'joined-conference' }
+      });
+    }
+  }, [localMediaStream]);
+
+  function onPlay() {
+    setJoining(false);
+  }
   return (
     <div className="client-root">
-      <h3>{name}</h3>
+      <div className="name">{name}</div>
       <div className="client">
         <div className="remote-participants">
           <ParticipantView
@@ -39,16 +57,20 @@ export default function ClientView({
           />
         </div>
         <div className="local-participant">
-          <DisplayMediaStream mediaStream={localMediaStream} />
+          <DisplayMediaStream
+            mediaStream={localMediaStream}
+            width="150"
+            onPlay={onPlay}
+          />
         </div>
       </div>
-      <div>
-        <button type="button" onClick={joinConference}>
-          Join Conference
-        </button>
-        <button type="button" onClick={joinConference}>
-          Leave Conference
-        </button>
+      <div className="btn-container">
+        <AsyncBtn title="Join" onClick={joinConference} inProgress={joining} />
+        <AsyncBtn
+          title="Leave"
+          onClick={leaveConference}
+          inProgress={leaving}
+        />
       </div>
     </div>
   );

@@ -1,15 +1,16 @@
 .participant {
-  background-color: yellow;
-
-  border: solid orange 1px;
   flex: 1;
+  position: relative;
 }
-
+.target {
+  position: absolute;
+}
 .video-conference {
   height: 250px;
   display: flex;
-  justify-content: space-around;
-  width: 50%;
+  justify-content: center;
+  width: 100%;
+
 }
 
 .client {
@@ -22,7 +23,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: brown;
 }
 
 .local-participant {
@@ -33,5 +33,16 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: orangered;
+  background-color: #e8eaf6;
+  position: relative;
+  margin-right: 10px;
+}
+.name {
+  position: absolute;
+  right: 6px;
+  top: 2px;
+}
+.btn-container{
+  display: flex;
+  justify-content: center;
 }

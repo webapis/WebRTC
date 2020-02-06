@@ -22,21 +22,10 @@ export default function useOffer({
   }
 
   function initiateOffer() {
+    debugger;
     setInitiated(true);
   }
-  useEffect(() => {
-    if (
-      remoteParticipant &&
-      signalingMessage &&
-      signalingMessage.message &&
-      signalingMessage.message.type === 'joined-conference' &&
-      signalingMessage.message.participant === remoteParticipant
-    ) {
-      debugger; // 1. Offer
 
-      initiateOffer();
-    }
-  }, [signalingMessage, remoteParticipant]);
 
   useEffect(() => {
     if (initiated) {
@@ -75,7 +64,8 @@ useEffect(()=>{
             message: {
               sdp: rtcPeerConnection.localDescription,
               type: 'offer',
-              target: remoteParticipant
+              target: remoteParticipant,
+              name
             }
           });
         })
@@ -118,18 +108,7 @@ useEffect(()=>{
     };
   });
 
-  // useEffect(() => {
-  //   if (
-  //     rtcPeerConnection &&
-  //     localMediaStream &&
-  //     initiated &&
-  //     rtcPeerConnection.signalingState !== 'closed'
-  //   ) {
-  //     localMediaStream.getVideoTracks().forEach(t => {
-  //       rtcPeerConnection.addTrack(t, localMediaStream);
-  //     });
-  //   }
-  // }, [rtcPeerConnection, localMediaStream]);
+
 
   return { initiateOffer, callerError };
 }
