@@ -10,7 +10,6 @@
   display: flex;
   justify-content: center;
   width: 100%;
-
 }
 
 .client {
@@ -28,6 +27,8 @@
 .local-participant {
   display: flex;
   flex: 2;
+  position: relative;
+
 }
 .client-root {
   height: 100%;
@@ -41,8 +42,9 @@
   position: absolute;
   right: 6px;
   top: 2px;
+
 }
-.btn-container{
+.btn-container {
   display: flex;
   justify-content: center;
 }

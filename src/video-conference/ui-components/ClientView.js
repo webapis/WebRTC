@@ -13,17 +13,24 @@ export default function ClientView({
   signalingMessage
 }) {
   const [localMediaStream, setLocalMediaStream] = useState(null);
-  const [joining, setJoining] = useState(false);
-  const [leaving,setLeaving]= useState(false);
+  const [joining, setJoining] = useState('');
+
   function joinConference() {
-    setJoining(true);
+    setJoining('joining');
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: false })
       .then(media => {
         setLocalMediaStream(media);
       });
   }
-  function leaveConference () {}
+  function leaveConference() {
+    sendSignalingMessage({
+      message: { participant: name, type: 'leave-conference' }
+    });
+
+    setJoining('');
+    setLocalMediaStream(null);
+  }
 
   useEffect(() => {
     if (localMediaStream) {
@@ -34,11 +41,10 @@ export default function ClientView({
   }, [localMediaStream]);
 
   function onPlay() {
-    setJoining(false);
+    setJoining('joined');
   }
   return (
     <div className="client-root">
-      <div className="name">{name}</div>
       <div className="client">
         <div className="remote-participants">
           <ParticipantView
@@ -58,6 +64,7 @@ export default function ClientView({
         </div>
         <div className="local-participant">
           <DisplayMediaStream
+            title={name}
             mediaStream={localMediaStream}
             width="150"
             onPlay={onPlay}
@@ -65,12 +72,19 @@ export default function ClientView({
         </div>
       </div>
       <div className="btn-container">
-        <AsyncBtn title="Join" onClick={joinConference} inProgress={joining} />
-        <AsyncBtn
-          title="Leave"
-          onClick={leaveConference}
-          inProgress={leaving}
-        />
+        {joining !== 'joined' ? (
+          <AsyncBtn
+            title="Join"
+            onClick={joinConference}
+            inProgress={joining === 'joining'}
+          />
+        ) : (
+          <AsyncBtn
+            title="Leave"
+            onClick={leaveConference}
+            inProgress={false}
+          />
+        )}
       </div>
     </div>
   );
