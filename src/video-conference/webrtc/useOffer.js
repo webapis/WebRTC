@@ -22,28 +22,28 @@ export default function useOffer({
   }
 
   function initiateOffer() {
-    debugger;
+
     setInitiated(true);
   }
 
 
   useEffect(() => {
     if (initiated) {
-      debugger; //2. Offer
+   
       getLocalMediaStream();
     }
   }, [initiated]);
 
   useEffect(() => {
     if (localMediaStream && initiated) {
-      debugger; // 3. Offer
+  
 
       createRTCPeerConnection(true);
     }
   }, [localMediaStream, initiated]);
 useEffect(()=>{
   if(rtcPeerConnection && localMediaStream && initiated){
-    debugger; // 3.1
+
     localMediaStream.getVideoTracks().forEach(t => {
       rtcPeerConnection.addTrack(t, localMediaStream);
     });
@@ -51,15 +51,15 @@ useEffect(()=>{
 },[rtcPeerConnection,localMediaStream, initiated])
   useEffect(() => {
     if (rtcPeerConnection && rtcPeerConnection.getReceivers().length > 0) {
-      debugger; // 4 Offer
+ 
       rtcPeerConnection
         .createOffer()
         .then(offer => {
-          debugger; // 5. Offer
+       
           return rtcPeerConnection.setLocalDescription(offer);
         })
         .then(() => {
-          debugger; // 6. Offer
+       
           sendSignalingMessage({
             message: {
               sdp: rtcPeerConnection.localDescription,
@@ -70,7 +70,7 @@ useEffect(()=>{
           });
         })
         .catch(err => {
-          debugger; // 6.1. Offer
+      
           setCallerError(err);
         });
     }
@@ -83,7 +83,7 @@ useEffect(()=>{
       signalingMessage.message.type === 'answer' &&
       rtcPeerConnection
     ) {
-      debugger; // 7. Offer
+  
       rtcPeerConnection
         .setRemoteDescription(signalingMessage.message.sdp)
         .then(() => {

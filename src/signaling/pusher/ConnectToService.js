@@ -1,17 +1,18 @@
 import React from 'react';
-import pusher from './pusher.png';
-import './css/style.css';
-export default function ConnectingToPusher({
-  connectToService
-}) {
 
-    return (
-      <div className="root">
-        <button className="connect-btn" onClick={connectToService}>
+import './css/style.css';
+
+export default function ConnectingToPusher({ connectToService }) {
+  return (
+    <div className="connect-to-service">
+      <div className="bnt-container">
+        <button
+          type="button"
+          onClick={connectToService}
+        >
           Connect to Service
         </button>
       </div>
-    );
-  
- 
+    </div>
+  );
 }

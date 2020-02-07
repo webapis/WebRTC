@@ -1,27 +1,18 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import useScaleDrone from './signaling/scaledrone/useScaleDrone';
 import ConnectToService from './signaling/pusher/ConnectToService';
 import VideoConferenceView from './video-conference/ui-components/VideoConferenceView';
-import './css/style.css'
+import './css/style.css';
 
 export default function Demo({ title }) {
   const {
     signalingError,
     connectionState,
-    messageSizeLimit,
     sendMessage,
     message,
     connectToService
   } = useScaleDrone({ channel_id: 'kgrfnwzdUtSa0se7', room_name: 'signaling' });
-
-  const [started, setStarted] = useState(false);
-
-  useEffect(() => {
-    if (connectionState) {
-      debugger;
-    }
-  }, [connectionState]);
 
   if (signalingError) {
     return <div> {signalingError.message}</div>;
@@ -36,13 +27,12 @@ export default function Demo({ title }) {
     return (
       <div className="root">
         <h1 className="demo-title">{title}</h1>
-        <div className="demo">
-          <VideoConferenceView
-            signalingMessage={message}
-            sendSignalingMessage={sendMessage}
-            conferenceName="video-conference"
-          />
-        </div>
+
+        <VideoConferenceView
+          signalingMessage={message}
+          sendSignalingMessage={sendMessage}
+          conferenceName="video-conference"
+        />
       </div>
     );
   }

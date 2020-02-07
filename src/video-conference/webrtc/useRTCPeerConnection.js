@@ -75,7 +75,6 @@ export default function useRTCPeerConnection({
   }
   useEffect(() => {
     if (!rtcPeerConnection) {
-      //  debugger;
       resetState();
     }
   }, [rtcPeerConnection]);

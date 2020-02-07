@@ -5,10 +5,6 @@
   position: relative;
 }
 
-.target {
-  position: absolute;
-}
-
 .video-conference {
   height: 250px;
   display: -webkit-box;
