@@ -13,7 +13,8 @@ export default function ParticipantView({
   const {
     remoteMediaStream,
     initiateOffer,
-    rtcPeerConnection
+    rtcPeerConnection,
+    state
   } = useWebRTC({
     signalingMessage,
     sendSignalingMessage,
@@ -49,10 +50,9 @@ export default function ParticipantView({
       signalingMessage.message.type === 'leave-conference' &&
       signalingMessage.message.participant === name
     ) {
-     
       if (rtcPeerConnection) {
         rtcPeerConnection.close();
-        setJoined(false)
+        setJoined(false);
       }
     }
 
@@ -62,17 +62,23 @@ export default function ParticipantView({
       signalingMessage.message.type === 'leave-conference' &&
       signalingMessage.message.participant === remoteParticipant
     ) {
-    
       if (rtcPeerConnection) {
         rtcPeerConnection.close();
-        setJoined(false)
+        setJoined(false);
       }
     }
   }, [signalingMessage]);
   return (
     <div className="participant">
- 
-      <DisplayMediaStream title={remoteParticipant} mediaStream={remoteMediaStream} width="100" />
+      {state.connectionState === 'connecting' ? (
+        <div className="connecting">Connecting...</div>
+      ) : (
+        <DisplayMediaStream
+          title={remoteParticipant}
+          mediaStream={remoteMediaStream}
+          width="100"
+        />
+      )}
     </div>
   );
 }
