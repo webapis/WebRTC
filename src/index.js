@@ -6,7 +6,8 @@ import * as serviceWorker from './serviceWorker';
 import Demo from './Demo'
 
 
-ReactDOM.render(<Demo title="Peer to Peer Text Chat Demo with WebRTC" clientOneName="gon" clientTwoName="kon" />, document.getElementById('root'));
+ReactDOM.render(<Demo title="Peer to Peer Text Chat Demo with WebRTC" />, document.getElementById('root'));
+
 
 
 // If you want your app to work offline and load faster, you can change
