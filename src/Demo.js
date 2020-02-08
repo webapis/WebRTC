@@ -12,7 +12,11 @@ export default function Demo({ title }) {
     sendMessage,
     message,
     connectToService
-  } = useScaleDrone({ channel_id: 'kgrfnwzdUtSa0se7', room_name: 'signaling' });
+  } = useScaleDrone({
+    channel_id: 'kgrfnwzdUtSa0se7',
+    room_name: 'signaling',
+    mock: true
+  });
 
   const [started, setStarted] = useState(false);
 
@@ -58,4 +62,3 @@ export default function Demo({ title }) {
     </div>
   );
 }
-
