@@ -10,7 +10,11 @@ export default function ScaleDroneDemo() {
     sendMessage,
     message,
     connectToService
-  } = useScaledrone({ channel_id: 'kgrfnwzdUtSa0se7', room_name: 'signaling' });
+  } = useScaledrone({
+    channel_id: 'kgrfnwzdUtSa0se7',
+    room_name: 'signaling',
+    mock: true
+  });
 
   return (
     <div>
