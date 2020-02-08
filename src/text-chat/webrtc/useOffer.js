@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { useEffect, useState } from 'react';
 
 export default function useOffer({
@@ -43,13 +44,15 @@ export default function useOffer({
     if (
       signalingMessage &&
       signalingMessage.type === 'answer' &&
-      signalingMessage.sdp.sdp
+      signalingMessage.sdp
     ) {
+
+  
       rtcPeerConnection
-        .setRemoteDescription(signalingMessage.sdp.sdp)
+        .setRemoteDescription(signalingMessage.sdp)
         .then(() => {
           if (remoteIceCandidates.length > 0) {
-            for (let ice in remoteIceCandidates) {
+            for (const ice in remoteIceCandidates) {
               if (ice) {
                 rtcPeerConnection.addIceCandidate(remoteIceCandidates[ice]);
               }

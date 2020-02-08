@@ -15,8 +15,8 @@ export default function useRTCPeerConnection({
   const [datachannelError, setDatachannelError] = useState(null);
   const [message, setMessage] = useState(null);
   function createRTCPeerConnection(initiator) {
-    let peerCon = new RTCPeerConnection(iceServers);
-    peerCon.onicecandidate = function(e) {
+    const peerCon = new RTCPeerConnection(iceServers);
+    peerCon.onicecandidate = (e)=> {
       if (e.candidate) {
         sendSignalingMessage({ sdp: e.candidate, type: 'ice' });
       }
@@ -35,9 +35,10 @@ export default function useRTCPeerConnection({
     };
 
     if (initiator) {
-      let channel = peerCon.createDataChannel('chat');
+      const channel = peerCon.createDataChannel('chat');
 
       channel.onmessage = event => {
+     
         setMessage(JSON.parse(event.data));
       };
 
@@ -47,10 +48,11 @@ export default function useRTCPeerConnection({
       setDatachannel(channel);
     } else {
       peerCon.ondatachannel = event => {
-        let channel = event.channel;
+        const {channel} = event;
 
-        channel.onmessage = event => {
-          setMessage(JSON.parse(event.data));
+        channel.onmessage = e => {
+         
+          setMessage(JSON.parse(e.data));
         };
 
         channel.onerror = err => {

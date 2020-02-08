@@ -18,15 +18,10 @@ export default function Client({
   const [text, setText] = useState('');
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    if (messages.length > 0) {
-      debugger;
-    }
-  }, [messages]);
 
   useEffect(() => {
     if (signalingMessage) {
-      debugger;
+    
       if (messages.length === 0) {
         setMessages([signalingMessage]);
       }

@@ -3,8 +3,6 @@ import Client from './Client';
 import useScaleDrone from './signaling/scaledrone/useScaleDrone';
 import ConnectToService from './signaling/pusher/ConnectToService';
 
-// import ErrorMessage from './ErrorMessage';
-
 export default function Demo({ title }) {
   const {
     signalingError,
@@ -13,12 +11,12 @@ export default function Demo({ title }) {
     sendMessage,
     message,
     connectToService
-  } = useScaleDrone({ channel_id: 'kgrfnwzdUtSa0se7', room_name: 'signaling' });
+  } = useScaleDrone({ channel_id: 'kgrfnwzdUtSa0se7', room_name: 'signaling',mock:true });
 
-  const [started,setStarted]= useState(false);
+  const [started, setStarted] = useState(false);
 
   if (signalingError) {
-    return <div> {signalingError.message}</div>;
+    return <div>{signalingError.message}</div>;
   }
   if (connectionState === '') {
     return <ConnectToService connectToService={connectToService} />;

@@ -3,8 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import adapter from 'webrtc-adapter';
 import * as serviceWorker from './serviceWorker';
-import Demo from './Demo'
-
+import Demo from './Demo';
 
 ReactDOM.render(<Demo title="Peer to Peer Text Chat Demo with WebRTC" />, document.getElementById('root'));
 
