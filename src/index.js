@@ -5,7 +5,6 @@ import adapter from 'webrtc-adapter';
 import * as serviceWorker from './serviceWorker';
 import Demo from './Demo';
 
-
 ReactDOM.render(
   <Demo title=" Peer to Peer File Transfer Demo using WebRTC" />,
   document.getElementById('root')
